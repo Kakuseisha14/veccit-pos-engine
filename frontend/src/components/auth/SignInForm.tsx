@@ -3,13 +3,16 @@
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
+import Alert from "@/components/ui/alert/Alert";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export default function SignInForm() {
   const { login } = useAuth();
+  const { showError, showSuccess } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,8 +25,12 @@ export default function SignInForm() {
     setSubmitting(true);
     try {
       await login(email, password);
+      showSuccess("Bienvenido", "Inicio de sesion exitoso");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al iniciar sesion");
+      const msg =
+        err instanceof Error ? err.message : "Error al iniciar sesion";
+      setError(msg);
+      showError("Error de autenticacion", msg);
     } finally {
       setSubmitting(false);
     }
@@ -52,6 +59,14 @@ export default function SignInForm() {
           </div>
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <Alert
+                  variant="error"
+                  title="Error al iniciar sesion"
+                  message={error}
+                />
+              )}
+
               <div>
                 <Label>
                   Correo <span className="text-error-500">*</span>
@@ -89,20 +104,12 @@ export default function SignInForm() {
                 </div>
               </div>
 
-              {error && (
-                <p
-                  role="alert"
-                  className="text-sm font-medium text-error-500"
-                >
-                  {error}
-                </p>
-              )}
-
               <div>
                 <Button
                   className="w-full"
                   size="sm"
                   disabled={submitting}
+                  type="submit"
                 >
                   {submitting ? "Ingresando..." : "Iniciar Sesion"}
                 </Button>

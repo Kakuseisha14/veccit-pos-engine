@@ -1,10 +1,11 @@
-import { Outfit } from 'next/font/google';
-import './globals.css';
+import { Outfit } from "next/font/google";
+import "./globals.css";
 import "flatpickr/dist/flatpickr.css";
-import { SidebarProvider } from '@/context/SidebarContext';
-import { ThemeProvider } from '@/context/ThemeContext';
-import { AuthProvider } from '@/context/AuthContext';
-import { RateProvider } from '@/context/RateContext';
+import { SidebarProvider } from "@/context/SidebarContext";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { RateProvider } from "@/context/RateContext";
+import { ToastProvider } from "@/context/ToastContext";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -16,13 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={`${outfit.className} dark:bg-gray-900`}>
         <ThemeProvider>
           <AuthProvider>
-            <RateProvider>
-              <SidebarProvider>{children}</SidebarProvider>
-            </RateProvider>
+            <ToastProvider>
+              <RateProvider>
+                <SidebarProvider>{children}</SidebarProvider>
+              </RateProvider>
+            </ToastProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -16,9 +16,22 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Permitir peticiones sin origen (ej: curl, insomnia) o cualquier localhost/127.0.0.1 en dev
+      if (
+        !origin ||
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, process.env.CORS_ORIGIN ?? 'http://localhost:3000');
+      }
+    },
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization, Cookie',
   });
 
   const swaggerConfig = new DocumentBuilder()

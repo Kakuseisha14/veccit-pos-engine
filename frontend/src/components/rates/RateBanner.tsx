@@ -3,12 +3,15 @@
 import React, { useState } from "react";
 import { useRate } from "@/context/RateContext";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
+import Alert from "@/components/ui/alert/Alert";
 
 export const RateBanner: React.FC = () => {
   const { rate, updateRate } = useRate();
   const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rateVES, setRateVES] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,16 +29,20 @@ export const RateBanner: React.FC = () => {
     e.preventDefault();
     const value = parseFloat(rateVES);
     if (!Number.isFinite(value) || value <= 0) {
-      setError("Ingresa una tasa valida mayor a 0");
+      const msg = "Ingresa una tasa valida mayor a 0";
+      setError(msg);
       return;
     }
     setError(null);
     setSubmitting(true);
     try {
       await updateRate(value);
+      showSuccess("Tasa actualizada", `La nueva tasa es ${value} Bs`);
       setIsModalOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al guardar la tasa");
+      const msg = err instanceof Error ? err.message : "Error al guardar la tasa";
+      setError(msg);
+      showError("Error de tasa", msg);
     } finally {
       setSubmitting(false);
     }
@@ -96,6 +103,14 @@ export const RateBanner: React.FC = () => {
           </p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <Alert
+              variant="error"
+              title="Error al guardar tasa"
+              message={error}
+            />
+          )}
+
           <div>
             <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Tasa VES
@@ -111,11 +126,7 @@ export const RateBanner: React.FC = () => {
               className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-800 outline-none transition focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
             />
           </div>
-          {error && (
-            <p role="alert" className="text-sm font-medium text-error-500">
-              {error}
-            </p>
-          )}
+
           <div className="flex items-center justify-end gap-3 pt-1">
             <Button
               variant="outline"

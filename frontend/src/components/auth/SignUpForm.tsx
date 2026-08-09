@@ -2,13 +2,17 @@
 
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
+import Alert from "@/components/ui/alert/Alert";
+import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export default function SignUpForm() {
   const { registerTenant } = useAuth();
+  const { showError, showSuccess } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [tenantName, setTenantName] = useState("");
   const [tenantAdminName, setTenantAdminName] = useState("");
@@ -28,8 +32,11 @@ export default function SignUpForm() {
         email,
         password,
       });
+      showSuccess("Comercio registrado", "Tu cuenta se ha creado exitosamente");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al registrar");
+      const msg = err instanceof Error ? err.message : "Error al registrar";
+      setError(msg);
+      showError("Error de registro", msg);
     } finally {
       setSubmitting(false);
     }
@@ -58,6 +65,14 @@ export default function SignUpForm() {
           </div>
           <div>
             <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <Alert
+                  variant="error"
+                  title="Error en el registro"
+                  message={error}
+                />
+              )}
+
               <div>
                 <Label>
                   Nombre del Comercio<span className="text-error-500">*</span>
@@ -120,26 +135,21 @@ export default function SignUpForm() {
                 </div>
               </div>
 
-              {error && (
-                <p role="alert" className="text-sm font-medium text-error-500">
-                  {error}
-                </p>
-              )}
-
               <div>
-                <button
+                <Button
                   type="submit"
                   disabled={submitting}
-                  className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full"
+                  size="sm"
                 >
                   {submitting ? "Registrando..." : "Registrar Comercio"}
-                </button>
+                </Button>
               </div>
             </form>
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Ya tienes una cuenta?
+                Ya tienes una cuenta?{" "}
                 <Link
                   href="/signin"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"

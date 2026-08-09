@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { getActiveRate, setDailyRate, type ActiveRate } from "@/lib/rates";
+import { useAuth } from "@/context/AuthContext";
 
 interface RateContextValue {
   rate: ActiveRate | null;
@@ -21,10 +22,16 @@ const RateContext = createContext<RateContextValue | undefined>(undefined);
 export const RateProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { status } = useAuth();
   const [rate, setRate] = useState<ActiveRate | null>(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
+    if (status !== "authenticated") {
+      setRate(null);
+      setLoading(false);
+      return;
+    }
     try {
       const { rate: active } = await getActiveRate();
       setRate(active);
@@ -33,10 +40,14 @@ export const RateProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [status]);
 
   useEffect(() => {
     let cancelled = false;
+
+    if (status !== "authenticated") {
+      return;
+    }
 
     const loadRate = async () => {
       try {
@@ -56,11 +67,14 @@ export const RateProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [status]);
 
   const updateRate = useCallback(
     async (rateVES: number) => {
-      const { rate: updated } = await setDailyRate(rateVES, new Date().toISOString().slice(0, 10));
+      const { rate: updated } = await setDailyRate(
+        rateVES,
+        new Date().toISOString().slice(0, 10),
+      );
       setRate(updated);
     },
     [],

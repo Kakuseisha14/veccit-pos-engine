@@ -66,6 +66,10 @@ npm run dev
 - El `CASHIER` solo puede **ver** la tasa activa; no puede modificarla.
 - Si no hay tasa para el día, el sistema usa la tasa más reciente como activa.
 
+### Notificaciones y Alertas (Diseño TailAdmin)
+- **Alertas Integradas:** Formularios de acceso, registro y edición utilizan el componente nativo `<Alert>` de TailAdmin (`success`, `error`, `warning`, `info`).
+- **Sistema Global de Toasts:** Notificaciones flotantes tipo toast en la esquina superior derecha para feedback inmediato en acciones del usuario.
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
