@@ -7,6 +7,10 @@ export interface AppConfig {
     password: string;
     name: string;
   };
+  jwt: {
+    secret: string;
+    expiresIn: string;
+  };
 }
 
 export default (): AppConfig => ({
@@ -17,5 +21,9 @@ export default (): AppConfig => ({
     username: process.env.DB_USERNAME ?? 'postgres',
     password: process.env.DB_PASSWORD ?? 'postgres',
     name: process.env.DB_DATABASE ?? 'veccit_pos',
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET ?? 'dev-secret-do-not-use',
+    expiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   },
 });
