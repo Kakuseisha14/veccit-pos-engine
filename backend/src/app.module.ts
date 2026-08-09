@@ -10,6 +10,7 @@ import { TenantContextInterceptor } from './presentation/http/interceptors/tenan
 import { HealthModule } from './presentation/http/controllers/health.module';
 import { AuthModule } from './presentation/http/modules/auth.module';
 import { UsersModule } from './presentation/http/modules/users.module';
+import { RatesModule } from './presentation/http/modules/rates.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UsersModule } from './presentation/http/modules/users.module';
     SecurityModule,
     AuthModule,
     UsersModule,
+    RatesModule,
     HealthModule,
   ],
   providers: [

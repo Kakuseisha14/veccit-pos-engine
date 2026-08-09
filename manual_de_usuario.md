@@ -60,6 +60,12 @@ npm run dev
 ### Gestión de usuarios del comercio (solo ADMIN)
 - Desde el panel protegido, el `TENANT_ADMIN` puede crear cajeros (`CASHIER`) y listar los usuarios del comercio.
 
+### Tasa del día y precios en Bolívares (Fase 2)
+- **Banner superior:** En todas las páginas del panel se muestra la tasa activa del día (USD → VES).
+- **Actualizar la tasa:** El `TENANT_ADMIN` puede abrir el modal **"Actualizar tasa"** desde el banner e ingresar cuántos Bolívares equivale 1 Dólar (ej: `60.50`).
+- El `CASHIER` solo puede **ver** la tasa activa; no puede modificarla.
+- Si no hay tasa para el día, el sistema usa la tasa más reciente como activa.
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
@@ -77,8 +83,8 @@ npm run dev
 | --- | --- | --- |
 | 0 | Setup e infraestructura | ✅ Completada |
 | 1 | Autenticación, Usuarios y Multi-Tenant | ✅ Completada |
-| 2 | Multimoneda y Tasa de Cambio | ⏳ Próxima |
-| 3 | Inventario | ⬜ Pendiente |
+| 2 | Multimoneda y Tasa de Cambio | ✅ Completada |
+| 3 | Inventario | ⏳ Próxima |
 | 4 | Ventas y POS | ⬜ Pendiente |
 | 5 | Cierre de Caja | ⬜ Pendiente |
 | 6 | Dashboard y Métricas | ⬜ Pendiente |
