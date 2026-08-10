@@ -3,6 +3,9 @@ import { DataSource } from 'typeorm';
 import { TenantEntity } from './entities/tenant.entity';
 import { UserEntity } from './entities/user.entity';
 import { ExchangeRateEntity } from './entities/exchange-rate.entity';
+import { CategoryEntity } from './entities/category.entity';
+import { ProductEntity } from './entities/product.entity';
+import { StockAdjustmentEntity } from './entities/stock-adjustment.entity';
 
 export default new DataSource({
   type: 'postgres',
@@ -11,7 +14,14 @@ export default new DataSource({
   username: process.env.DB_USERNAME ?? 'postgres',
   password: process.env.DB_PASSWORD ?? 'postgres',
   database: process.env.DB_DATABASE ?? 'veccit_pos',
-  entities: [TenantEntity, UserEntity, ExchangeRateEntity],
+  entities: [
+    TenantEntity,
+    UserEntity,
+    ExchangeRateEntity,
+    CategoryEntity,
+    ProductEntity,
+    StockAdjustmentEntity,
+  ],
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
   synchronize: false,
   logging: ['error', 'warn'],

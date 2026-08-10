@@ -11,6 +11,7 @@ import { HealthModule } from './presentation/http/controllers/health.module';
 import { AuthModule } from './presentation/http/modules/auth.module';
 import { UsersModule } from './presentation/http/modules/users.module';
 import { RatesModule } from './presentation/http/modules/rates.module';
+import { InventoryModule } from './presentation/http/modules/inventory.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RatesModule } from './presentation/http/modules/rates.module';
     AuthModule,
     UsersModule,
     RatesModule,
+    InventoryModule,
     HealthModule,
   ],
   providers: [

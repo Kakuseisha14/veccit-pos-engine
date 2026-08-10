@@ -24,7 +24,7 @@ docker compose up -d db
 cd backend
 npm install
 cp .env.example .env      # ya configura PORT=3001
-npm run migration:run     # aplica migraciones (tablas tenants & users)
+npm run migration:run     # aplica migraciones (tenants, users, tasas, inventario)
 npm run start:dev
 ```
 - API base: `http://localhost:3001/api`
@@ -70,6 +70,15 @@ npm run dev
 - **Alertas Integradas:** Formularios de acceso, registro y edición utilizan el componente nativo `<Alert>` de TailAdmin (`success`, `error`, `warning`, `info`).
 - **Sistema Global de Toasts:** Notificaciones flotantes tipo toast en la esquina superior derecha para feedback inmediato en acciones del usuario.
 
+### Módulo de Inventario (Fase 3)
+- **Acceso:** En el menú lateral → **Inventario** (`/products`). El `TENANT_ADMIN` tiene control total; el `CASHIER` solo visualiza la lista de productos (sin costos).
+- **Catálogo de productos (USD):** Botón **"Agregar producto"** para registrar SKU (se normaliza a mayúsculas), nombre, descripción, precio y costo en USD, stock inicial, stock mínimo y categoría.
+- **Categorías:** Botón **"Nueva categoria"** para agrupar productos (ej: Bebidas, Alimentos).
+- **Precios duales:** La tabla muestra el **precio en USD** y su equivalente en **VES** usando la tasa activa del día.
+- **Indicadores de stock:** Badge **Verde "En stock"** si el stock supera el mínimo, y **Rojo "Stock bajo"** si `stock <= minStock`. Un banner de advertencia lista los productos bajo mínimos.
+- **Ajuste rápido de stock:** Botón **"Ajustar stock"** por producto → modal con Entrada (+)/Salida (-), cantidad y motivo. Las salidas no pueden dejar stock negativo (se rechazan con `InsufficientStockException`).
+- **Edición:** Botón **"Editar"** para modificar datos del producto (el stock no se edita aquí, usa el ajuste rápido).
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
@@ -88,7 +97,7 @@ npm run dev
 | 0 | Setup e infraestructura | ✅ Completada |
 | 1 | Autenticación, Usuarios y Multi-Tenant | ✅ Completada |
 | 2 | Multimoneda y Tasa de Cambio | ✅ Completada |
-| 3 | Inventario | ⏳ Próxima |
+| 3 | Inventario | ✅ Completada |
 | 4 | Ventas y POS | ⬜ Pendiente |
 | 5 | Cierre de Caja | ⬜ Pendiente |
 | 6 | Dashboard y Métricas | ⬜ Pendiente |
