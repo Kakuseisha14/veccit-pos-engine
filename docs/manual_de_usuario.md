@@ -25,7 +25,7 @@ cd backend
 npm install
 cp .env.example .env      # ya configura PORT=3001
 npm run migration:run     # aplica migraciones (tenants, users, tasas, inventario)
-npm run start:dev
+npm run start:dev         # en desarrollo ejecuta las migraciones pendientes automáticamente al arrancar
 ```
 - API base: `http://localhost:3001/api`
 - **Swagger (documentación de la API):** `http://localhost:3001/api/docs`
@@ -61,14 +61,15 @@ npm run dev
 - Desde el panel protegido, el `TENANT_ADMIN` puede crear cajeros (`CASHIER`) y listar los usuarios del comercio.
 
 ### Tasa del día y precios en Bolívares (Fase 2)
-- **Banner superior:** En todas las páginas del panel se muestra la tasa activa del día (USD → VES).
-- **Actualizar la tasa:** El `TENANT_ADMIN` puede abrir el modal **"Actualizar tasa"** desde el banner e ingresar cuántos Bolívares equivale 1 Dólar (ej: `60.50`).
+- **Control de tasa en el Header:** La tasa activa del día (USD → VES) se muestra como una **píldora integrada** en el Header de TailAdmin, justo al lado del icono de notificaciones (campanita), sin ocupar espacio del contenido.
+- **Actualizar la tasa:** El `TENANT_ADMIN` hace clic en la píldora para abrir el modal **"Actualizar tasa"** e ingresar cuántos Bolívares equivale 1 Dólar (ej: `60.50`).
 - El `CASHIER` solo puede **ver** la tasa activa; no puede modificarla.
 - Si no hay tasa para el día, el sistema usa la tasa más reciente como activa.
 
 ### Notificaciones y Alertas (Diseño TailAdmin)
 - **Alertas Integradas:** Formularios de acceso, registro y edición utilizan el componente nativo `<Alert>` de TailAdmin (`success`, `error`, `warning`, `info`).
 - **Sistema Global de Toasts:** Notificaciones flotantes tipo toast en la esquina superior derecha para feedback inmediato en acciones del usuario.
+- Los errores de carga de inventario y de autenticación (credenciales inválidas) se muestran como **toasts** flotantes, sin cajas rojas estáticas en las vistas.
 
 ### Módulo de Inventario (Fase 3)
 - **Acceso:** En el menú lateral → **Inventario** (`/products`). El `TENANT_ADMIN` tiene control total; el `CASHIER` solo visualiza la lista de productos (sin costos).
@@ -78,6 +79,7 @@ npm run dev
 - **Indicadores de stock:** Badge **Verde "En stock"** si el stock supera el mínimo, y **Rojo "Stock bajo"** si `stock <= minStock`. Un banner de advertencia lista los productos bajo mínimos.
 - **Ajuste rápido de stock:** Botón **"Ajustar stock"** por producto → modal con Entrada (+)/Salida (-), cantidad y motivo. Las salidas no pueden dejar stock negativo (se rechazan con `InsufficientStockException`).
 - **Edición:** Botón **"Editar"** para modificar datos del producto (el stock no se edita aquí, usa el ajuste rápido).
+- **Manejo de errores:** Si falla la carga del inventario (productos/categorías), se muestra un **toast de error** flotante en vez de una caja roja estática; los errores de los formularios (crear/editar/ajustar stock/categorías) aparecen dentro del modal correspondiente.
 
 ### Roles y permisos
 | Rol | Permisos |
