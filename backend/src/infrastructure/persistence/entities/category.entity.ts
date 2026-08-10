@@ -19,6 +19,9 @@ export class CategoryEntity {
   @Column({ type: 'varchar', length: 80 })
   name!: string;
 
+  @Column({ type: 'boolean', default: true })
+  isActive!: boolean;
+
   @CreateDateColumn()
   createdAt!: Date;
 

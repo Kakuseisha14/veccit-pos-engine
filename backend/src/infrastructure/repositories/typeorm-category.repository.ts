@@ -16,8 +16,8 @@ export class TypeOrmCategoryRepository implements ICategoryRepository {
     private readonly repository: Repository<CategoryEntity>,
   ) {}
 
-  async findById(id: string): Promise<Category | null> {
-    const entity = await this.repository.findOneBy({ id });
+  async findById(tenantId: string, id: string): Promise<Category | null> {
+    const entity = await this.repository.findOneBy({ tenantId, id });
     return entity ? toDomainCategory(entity) : null;
   }
 

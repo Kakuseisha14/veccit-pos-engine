@@ -36,6 +36,7 @@ export class CreateCategoryUseCase {
       category: {
         id: category.id,
         name: category.name,
+        isActive: category.isActive,
         createdAt: category.createdAt,
         updatedAt: category.updatedAt,
       },

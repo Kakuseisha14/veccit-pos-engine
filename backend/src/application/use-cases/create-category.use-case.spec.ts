@@ -1,6 +1,6 @@
 import { CreateCategoryUseCase } from './create-category.use-case';
 import type { ICategoryRepository } from '../../domain/repositories/category.repository';
-import type { Category } from '../../domain/entities/category.entity';
+import { Category } from '../../domain/entities/category.entity';
 import { CategoryAlreadyExistsException } from '../../domain/exceptions/category-already-exists.exception';
 import { InvalidCategoryNameException } from '../../domain/exceptions/invalid-category-name.exception';
 
@@ -30,13 +30,14 @@ describe('CreateCategoryUseCase', () => {
   });
 
   it('lanza CategoryAlreadyExistsException si el nombre ya existe', async () => {
-    const existing: Category = {
-      id: 'cat-1',
+    const existing: Category = new Category(
+      'cat-1',
       tenantId,
-      name: 'Bebidas',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      'Bebidas',
+      new Date(),
+      new Date(),
+      true,
+    );
     categoryRepository.findByName.mockResolvedValue(existing);
 
     await expect(

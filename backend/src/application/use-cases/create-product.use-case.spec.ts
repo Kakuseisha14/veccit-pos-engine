@@ -2,7 +2,6 @@ import { CreateProductUseCase } from './create-product.use-case';
 import type { IProductRepository } from '../../domain/repositories/product.repository';
 import type { ICategoryRepository } from '../../domain/repositories/category.repository';
 import { Product } from '../../domain/entities/product.entity';
-import type { Category } from '../../domain/entities/category.entity';
 import { SkuAlreadyExistsException } from '../../domain/exceptions/sku-already-exists.exception';
 import { CategoryNotFoundException } from '../../domain/exceptions/category-not-found.exception';
 import { InvalidProductDataException } from '../../domain/exceptions/invalid-product-data.exception';
@@ -75,16 +74,9 @@ describe('CreateProductUseCase', () => {
     expect(productRepository.save).not.toHaveBeenCalled();
   });
 
-  it('lanza CategoryNotFoundException si la categoria pertenece a otro tenant', async () => {
-    const category: Category = {
-      id: 'cat-1',
-      tenantId: 'other-tenant',
-      name: 'Bebidas',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  it('lanza CategoryNotFoundException si la categoria no existe en el tenant', async () => {
     productRepository.findBySku.mockResolvedValue(null);
-    categoryRepository.findById.mockResolvedValue(category);
+    categoryRepository.findById.mockResolvedValue(null);
 
     await expect(
       useCase.execute({ ...validInput, categoryId: 'cat-1' }),

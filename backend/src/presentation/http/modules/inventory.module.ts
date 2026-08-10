@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CreateCategoryUseCase } from '../../../application/use-cases/create-category.use-case';
+import { UpdateCategoryUseCase } from '../../../application/use-cases/update-category.use-case';
 import { ListCategoriesUseCase } from '../../../application/use-cases/list-categories.use-case';
 import { CreateProductUseCase } from '../../../application/use-cases/create-product.use-case';
 import { UpdateProductUseCase } from '../../../application/use-cases/update-product.use-case';
@@ -13,6 +14,7 @@ import { CategoriesController } from '../controllers/categories.controller';
   controllers: [ProductsController, CategoriesController],
   providers: [
     CreateCategoryUseCase,
+    UpdateCategoryUseCase,
     ListCategoriesUseCase,
     CreateProductUseCase,
     UpdateProductUseCase,

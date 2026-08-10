@@ -1,6 +1,6 @@
 import { ListCategoriesUseCase } from './list-categories.use-case';
 import type { ICategoryRepository } from '../../domain/repositories/category.repository';
-import type { Category } from '../../domain/entities/category.entity';
+import { Category } from '../../domain/entities/category.entity';
 
 describe('ListCategoriesUseCase', () => {
   let useCase: ListCategoriesUseCase;
@@ -20,20 +20,8 @@ describe('ListCategoriesUseCase', () => {
 
   it('retorna las categorias ordenadas por nombre', async () => {
     const categories: Category[] = [
-      {
-        id: 'c1',
-        tenantId,
-        name: 'Bebidas',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'c2',
-        tenantId,
-        name: 'Alimentos',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+      new Category('c1', tenantId, 'Bebidas', new Date(), new Date(), true),
+      new Category('c2', tenantId, 'Alimentos', new Date(), new Date(), true),
     ];
     categoryRepository.listByTenant.mockResolvedValue(categories);
 

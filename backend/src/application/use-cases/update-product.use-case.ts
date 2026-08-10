@@ -72,8 +72,11 @@ export class UpdateProductUseCase {
     if (input.categoryId !== undefined) {
       nextCategoryId = input.categoryId;
       if (nextCategoryId) {
-        nextCategory = await this.categoryRepository.findById(nextCategoryId);
-        if (!nextCategory || nextCategory.tenantId !== input.tenantId) {
+        nextCategory = await this.categoryRepository.findById(
+          input.tenantId,
+          nextCategoryId,
+        );
+        if (!nextCategory) {
           throw new CategoryNotFoundException(nextCategoryId);
         }
       }

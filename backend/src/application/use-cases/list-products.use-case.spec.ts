@@ -2,7 +2,7 @@ import { ListProductsUseCase } from './list-products.use-case';
 import type { IProductRepository } from '../../domain/repositories/product.repository';
 import type { ICategoryRepository } from '../../domain/repositories/category.repository';
 import { Product } from '../../domain/entities/product.entity';
-import type { Category } from '../../domain/entities/category.entity';
+import { Category } from '../../domain/entities/category.entity';
 
 describe('ListProductsUseCase', () => {
   let useCase: ListProductsUseCase;
@@ -52,13 +52,7 @@ describe('ListProductsUseCase', () => {
       buildProduct({ id: 'p2', name: 'Agua', categoryId: 'cat-1' }),
     ]);
     const categories: Category[] = [
-      {
-        id: 'cat-1',
-        tenantId,
-        name: 'Bebidas',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+      new Category('cat-1', tenantId, 'Bebidas', new Date(), new Date(), true),
     ];
     categoryRepository.listByTenant.mockResolvedValue(categories);
 

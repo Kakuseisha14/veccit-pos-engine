@@ -12,6 +12,7 @@ export class Category {
     public readonly name: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
+    public readonly isActive: boolean = true,
   ) {}
 
   static create(input: CreateCategoryInput): Category {
@@ -22,6 +23,29 @@ export class Category {
       input.name.trim(),
       now,
       now,
+      true,
+    );
+  }
+
+  rename(name: string): Category {
+    return new Category(
+      this.id,
+      this.tenantId,
+      name.trim(),
+      this.createdAt,
+      new Date(),
+      this.isActive,
+    );
+  }
+
+  setActive(isActive: boolean): Category {
+    return new Category(
+      this.id,
+      this.tenantId,
+      this.name,
+      this.createdAt,
+      new Date(),
+      isActive,
     );
   }
 }

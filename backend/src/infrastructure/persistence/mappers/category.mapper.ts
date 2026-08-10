@@ -8,6 +8,7 @@ export function toDomainCategory(entity: CategoryEntity): Category {
     entity.name,
     entity.createdAt,
     entity.updatedAt,
+    entity.isActive,
   );
 }
 
@@ -16,6 +17,7 @@ export function toEntityCategory(category: Category): CategoryEntity {
   entity.id = category.id;
   entity.tenantId = category.tenantId;
   entity.name = category.name;
+  entity.isActive = category.isActive;
   entity.createdAt = category.createdAt;
   entity.updatedAt = category.updatedAt;
   return entity;

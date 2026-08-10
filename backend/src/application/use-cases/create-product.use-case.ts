@@ -58,8 +58,11 @@ export class CreateProductUseCase {
 
     let category = null;
     if (input.categoryId) {
-      category = await this.categoryRepository.findById(input.categoryId);
-      if (!category || category.tenantId !== input.tenantId) {
+      category = await this.categoryRepository.findById(
+        input.tenantId,
+        input.categoryId,
+      );
+      if (!category) {
         throw new CategoryNotFoundException(input.categoryId);
       }
     }
