@@ -2,7 +2,6 @@
 
 import { useSidebar } from "@/context/SidebarContext";
 import { AuthGuard } from "@/components/auth/AuthGuard";
-import { RateBanner } from "@/components/rates/RateBanner";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
@@ -36,7 +35,6 @@ export default function AdminLayout({
           <AppHeader />
           {/* Page Content */}
           <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-            <RateBanner />
             {children}
           </div>
         </div>

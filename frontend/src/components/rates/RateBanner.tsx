@@ -6,22 +6,19 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 
 export const RateBanner: React.FC = () => {
   const { rate, updateRate } = useRate();
   const { user } = useAuth();
-  const { showSuccess, showError } = useToast();
+  const { showError, showSuccess } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rateVES, setRateVES] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const isAdmin = user?.role === "TENANT_ADMIN";
 
   const openModal = () => {
     setRateVES(rate ? String(rate.rateVES) : "");
-    setError(null);
     setIsModalOpen(true);
   };
 
@@ -29,65 +26,67 @@ export const RateBanner: React.FC = () => {
     e.preventDefault();
     const value = parseFloat(rateVES);
     if (!Number.isFinite(value) || value <= 0) {
-      const msg = "Ingresa una tasa valida mayor a 0";
-      setError(msg);
+      showError("Tasa invalida", "Ingresa una tasa valida mayor a 0");
       return;
     }
-    setError(null);
     setSubmitting(true);
     try {
       await updateRate(value);
       showSuccess("Tasa actualizada", `La nueva tasa es ${value} Bs`);
       setIsModalOpen(false);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Error al guardar la tasa";
-      setError(msg);
+      const msg =
+        err instanceof Error ? err.message : "Error al guardar la tasa";
       showError("Error de tasa", msg);
     } finally {
       setSubmitting(false);
     }
   };
 
+  const pillClass =
+    "flex h-11 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800";
+
+  const pillContent = (
+    <>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M12 2.75C10.4812 2.75 9.25 3.98122 9.25 5.5V8H7.5C6.5335 8 5.75 8.7835 5.75 9.75V18.5C5.75 19.4665 6.5335 20.25 7.5 20.25H16.5C17.4665 20.25 18.25 19.4665 18.25 18.5V9.75C18.25 8.7835 17.4665 8 16.5 8H14.75V5.5C14.75 3.98122 13.5188 2.75 12 2.75ZM12 5.25C12.1381 5.25 12.25 5.36193 12.25 5.5V8H11.75V5.5C11.75 5.36193 11.8619 5.25 12 5.25Z"
+          fill="currentColor"
+        />
+      </svg>
+      <span>{rate ? `${rate.rateVES} Bs` : "Sin tasa"}</span>
+    </>
+  );
+
+  const rateTitle = rate
+    ? `Tasa del dia: ${rate.rateVES} Bs (vigente desde ${rate.date})`
+    : "Tasa del dia sin definir";
+
   return (
     <>
-      <div className="flex items-center justify-between gap-4 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 dark:border-brand-800/50 dark:bg-brand-950/40">
-        <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 2.75C10.4812 2.75 9.25 3.98122 9.25 5.5V8H7.5C6.5335 8 5.75 8.7835 5.75 9.75V18.5C5.75 19.4665 6.5335 20.25 7.5 20.25H16.5C17.4665 20.25 18.25 19.4665 18.25 18.5V9.75C18.25 8.7835 17.4665 8 16.5 8H14.75V5.5C14.75 3.98122 13.5188 2.75 12 2.75ZM12 5.25C12.1381 5.25 12.25 5.36193 12.25 5.5V8H11.75V5.5C11.75 5.36193 11.8619 5.25 12 5.25Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
-          <div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
-              Tasa del dia (USD a VES):{" "}
-              <span className="font-semibold text-brand-600 dark:text-brand-400">
-                {rate ? `${rate.rateVES} Bs` : "Sin definir"}
-              </span>
-            </p>
-            {rate && (
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Vigente desde {rate.date}
-              </p>
-            )}
-          </div>
-        </div>
-        {isAdmin && (
-          <Button size="sm" onClick={openModal} className="shrink-0">
-            Actualizar tasa
-          </Button>
-        )}
-      </div>
+      {isAdmin ? (
+        <button
+          type="button"
+          onClick={openModal}
+          className={pillClass}
+          title={`${rateTitle} - haz clic para actualizar`}
+          aria-label="Actualizar tasa del dia"
+        >
+          {pillContent}
+        </button>
+      ) : (
+        <span className={pillClass} title={rateTitle}>
+          {pillContent}
+        </span>
+      )}
 
       <Modal
         isOpen={isModalOpen}
@@ -103,14 +102,6 @@ export const RateBanner: React.FC = () => {
           </p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <Alert
-              variant="error"
-              title="Error al guardar tasa"
-              message={error}
-            />
-          )}
-
           <div>
             <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Tasa VES

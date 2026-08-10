@@ -24,14 +24,13 @@ import {
 
 export const InventoryView: React.FC = () => {
   const { user } = useAuth();
-  const { showSuccess } = useToast();
+  const { showError, showSuccess } = useToast();
   const isAdmin = user?.role === "TENANT_ADMIN";
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [lowStockCount, setLowStockCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
 
   const [productFormOpen, setProductFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -62,7 +61,8 @@ export const InventoryView: React.FC = () => {
         }
       } catch (err) {
         if (cancelled) return;
-        setLoadError(
+        showError(
+          "Error de inventario",
           err instanceof Error ? err.message : "Error al cargar el inventario",
         );
       } finally {
@@ -75,11 +75,10 @@ export const InventoryView: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, showError]);
 
   const refresh = useCallback(async () => {
     setLoading(true);
-    setLoadError(null);
     try {
       const [productRes, categoryRes] = await Promise.all([
         listProducts(),
@@ -92,13 +91,14 @@ export const InventoryView: React.FC = () => {
         setLowStockCount(lowStock.count);
       }
     } catch (err) {
-      setLoadError(
+      showError(
+        "Error de inventario",
         err instanceof Error ? err.message : "Error al cargar el inventario",
       );
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, showError]);
 
   const handleCreateProduct = async (payload: CreateProductPayload) => {
     setSubmitting(true);
@@ -214,10 +214,6 @@ export const InventoryView: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {loadError && (
-        <Alert variant="error" title="Error de carga" message={loadError} />
-      )}
-
       {isAdmin && lowStockCount > 0 && (
         <Alert
           variant="warning"
