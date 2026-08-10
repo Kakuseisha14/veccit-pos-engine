@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
@@ -12,5 +13,7 @@ export const typeOrmModuleOptions = (
   database: config.get<string>('DB_DATABASE', 'veccit_pos'),
   autoLoadEntities: true,
   synchronize: false,
+  migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
+  migrationsRun: config.get<string>('NODE_ENV', 'development') !== 'production',
   logging: ['error', 'warn'],
 });
