@@ -3,7 +3,6 @@
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
@@ -16,12 +15,10 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setSubmitting(true);
     try {
       await login(email, password);
@@ -29,7 +26,6 @@ export default function SignInForm() {
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : "Error al iniciar sesion";
-      setError(msg);
       showError("Error de autenticacion", msg);
     } finally {
       setSubmitting(false);
@@ -59,14 +55,6 @@ export default function SignInForm() {
           </div>
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <Alert
-                  variant="error"
-                  title="Error al iniciar sesion"
-                  message={error}
-                />
-              )}
-
               <div>
                 <Label>
                   Correo <span className="text-error-500">*</span>

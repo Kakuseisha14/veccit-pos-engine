@@ -5,6 +5,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -13,6 +14,7 @@ import type { Response } from 'express';
 import { RegisterTenantUseCase } from '../../../application/use-cases/register-tenant.use-case';
 import { LoginUseCase } from '../../../application/use-cases/login.use-case';
 import { GetCurrentSessionUseCase } from '../../../application/use-cases/get-current-session.use-case';
+import { InvalidCredentialsException } from '../../../domain/exceptions/invalid-credentials.exception';
 import type { TokenPayload } from '../../../application/services/token.service';
 import { RegisterTenantRequestDto } from '../../dtos/register-tenant.request';
 import { LoginRequestDto } from '../../dtos/login.request';
@@ -55,10 +57,18 @@ export class AuthController {
     @Body() dto: LoginRequestDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.loginUseCase.execute({
-      email: dto.email,
-      password: dto.password,
-    });
+    let result: Awaited<ReturnType<LoginUseCase['execute']>>;
+    try {
+      result = await this.loginUseCase.execute({
+        email: dto.email,
+        password: dto.password,
+      });
+    } catch (err) {
+      if (err instanceof InvalidCredentialsException) {
+        throw new UnauthorizedException(err.message);
+      }
+      throw err;
+    }
 
     res.cookie(COOKIE_NAME, result.accessToken, {
       httpOnly: true,
