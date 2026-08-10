@@ -27,7 +27,7 @@ type InventoryTab = "products" | "categories";
 
 const getTabClass = (active: boolean) =>
   active
-    ? "shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800"
+    ? "bg-white shadow-card rounded-md text-gray-900 dark:bg-gray-800 dark:text-white"
     : "text-gray-500 dark:text-gray-400";
 
 export const InventoryView: React.FC = () => {
@@ -276,7 +276,7 @@ export const InventoryView: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex w-full items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900 sm:w-auto">
+      <div className="inline-flex items-center gap-0.5 rounded-md bg-gray-2 p-1.5 dark:bg-meta-4">
         <button
           type="button"
           onClick={() => setActiveTab("products")}
@@ -313,7 +313,6 @@ export const InventoryView: React.FC = () => {
             onAddProduct={openCreateProduct}
             onEditProduct={openEditProduct}
             onAdjustStock={openAdjustStock}
-            onAddCategory={openCreateCategory}
           />
         </div>
       )}

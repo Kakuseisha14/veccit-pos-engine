@@ -29,10 +29,7 @@ export const CategoriesTable: React.FC<CategoriesTableProps> = ({
 }) => {
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="flex flex-col gap-3 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Categorias
-        </h3>
+      <div className="flex items-center justify-end gap-2 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
         {isAdmin && (
           <Button size="sm" onClick={onAddCategory}>
             Nueva categoria
@@ -41,7 +38,7 @@ export const CategoriesTable: React.FC<CategoriesTableProps> = ({
       </div>
 
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="w-full">
           <TableHeader className="bg-gray-50 text-left text-theme-xs text-gray-500 dark:bg-gray-800/40 dark:text-gray-400">
             <TableRow>
               <TableCell isHeader className="px-5 py-3 font-medium">
@@ -54,7 +51,7 @@ export const CategoriesTable: React.FC<CategoriesTableProps> = ({
                 Creada
               </TableCell>
               {isAdmin && (
-                <TableCell isHeader className="px-5 py-3 font-medium">
+                <TableCell isHeader className="px-5 py-3 font-medium text-right">
                   Acciones
                 </TableCell>
               )}
@@ -89,8 +86,8 @@ export const CategoriesTable: React.FC<CategoriesTableProps> = ({
                     {new Date(category.createdAt).toLocaleDateString("es-VE")}
                   </TableCell>
                   {isAdmin && (
-                    <TableCell className="px-5 py-4">
-                      <div className="flex items-center gap-2">
+                    <TableCell className="px-5 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
                         <Button
                           size="sm"
                           variant="outline"

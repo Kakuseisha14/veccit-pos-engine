@@ -13,7 +13,6 @@ interface ProductsTableProps {
   onAddProduct: () => void;
   onEditProduct: (product: Product) => void;
   onAdjustStock: (product: Product) => void;
-  onAddCategory: () => void;
 }
 
 export const ProductsTable: React.FC<ProductsTableProps> = ({
@@ -22,33 +21,22 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
   onAddProduct,
   onEditProduct,
   onAdjustStock,
-  onAddCategory,
 }) => {
   const { rate } = useRate();
   const rateVES = rate?.rateVES ?? null;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="flex flex-col gap-3 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Productos
-        </h3>
-        <div className="flex flex-wrap items-center gap-2">
-          {isAdmin && (
-            <>
-              <Button size="sm" variant="outline" onClick={onAddCategory}>
-                Nueva categoria
-              </Button>
-              <Button size="sm" onClick={onAddProduct}>
-                Agregar producto
-              </Button>
-            </>
-          )}
-        </div>
+      <div className="flex items-center justify-end gap-2 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+        {isAdmin && (
+          <Button size="sm" onClick={onAddProduct}>
+            Agregar producto
+          </Button>
+        )}
       </div>
 
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="w-full">
           <TableHeader className="bg-gray-50 text-left text-theme-xs text-gray-500 dark:bg-gray-800/40 dark:text-gray-400">
             <TableRow>
               <TableCell isHeader className="px-5 py-3 font-medium">
@@ -75,7 +63,7 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
                 Estado
               </TableCell>
               {isAdmin && (
-                <TableCell isHeader className="px-5 py-3 font-medium">
+                <TableCell isHeader className="px-5 py-3 font-medium text-right">
                   Acciones
                 </TableCell>
               )}
@@ -148,21 +136,21 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
                       )}
                     </TableCell>
                     {isAdmin && (
-                      <TableCell className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => onAdjustStock(product)}
-                          >
-                            Ajustar stock
-                          </Button>
+                      <TableCell className="px-5 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => onEditProduct(product)}
                           >
                             Editar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onAdjustStock(product)}
+                          >
+                            Ajustar stock
                           </Button>
                         </div>
                       </TableCell>
