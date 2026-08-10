@@ -73,8 +73,12 @@ npm run dev
 
 ### Módulo de Inventario (Fase 3)
 - **Acceso:** En el menú lateral → **Inventario** (`/products`). El `TENANT_ADMIN` tiene control total; el `CASHIER` solo visualiza la lista de productos (sin costos).
-- **Catálogo de productos (USD):** Botón **"Agregar producto"** para registrar SKU (se normaliza a mayúsculas), nombre, descripción, precio y costo en USD, stock inicial, stock mínimo y categoría.
-- **Categorías:** Botón **"Nueva categoria"** para agrupar productos (ej: Bebidas, Alimentos).
+- **Vista por pestañas:** La pantalla usa un componente de **pestañas** al estilo TailAdmin: **Productos** y **Categorías**.
+- **Catálogo de productos (USD):** Botón **"Agregar producto"** (en el header de la tarjeta de Productos) para registrar SKU (se normaliza a mayúsculas), nombre, descripción, precio y costo en USD, stock inicial, stock mínimo y categoría. Solo se ofrecen las **categorías activas**.
+- **Categorías (CRUD completo):** En la pestaña **Categorías** se listan todas las categorías del comercio en una tabla con estado (Activa/Inactiva) y fecha de creación. Acciones por fila:
+  - **Editar:** abre un modal para renombrar la categoría (valida nombre único).
+  - **Inactivar/Activar:** cambia el estado de la categoría vía `PATCH /api/categories/:id`.
+  - **Nueva categoria:** botón en el header de la tabla para crear (vía `POST /api/categories`).
 - **Precios duales:** La tabla muestra el **precio en USD** y su equivalente en **VES** usando la tasa activa del día.
 - **Indicadores de stock:** Badge **Verde "En stock"** si el stock supera el mínimo, y **Rojo "Stock bajo"** si `stock <= minStock`. Un banner de advertencia lista los productos bajo mínimos.
 - **Ajuste rápido de stock:** Botón **"Ajustar stock"** por producto → modal con Entrada (+)/Salida (-), cantidad y motivo. Las salidas no pueden dejar stock negativo (se rechazan con `InsufficientStockException`).
