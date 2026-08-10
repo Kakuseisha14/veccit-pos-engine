@@ -12,6 +12,8 @@ interface CategoryModalProps {
   onClose: () => void;
   submitting: boolean;
   error: string | null;
+  initialName?: string;
+  isEditing: boolean;
   onSubmit: (name: string) => void;
 }
 
@@ -20,9 +22,11 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
   onClose,
   submitting,
   error,
+  initialName,
+  isEditing,
   onSubmit,
 }) => {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(initialName ?? "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,10 +37,12 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-md p-6">
       <div className="mb-5">
         <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90">
-          Nueva categoria
+          {isEditing ? "Editar categoria" : "Nueva categoria"}
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Agrupa tus productos para organizar el catalogo.
+          {isEditing
+            ? "Actualiza el nombre de la categoria."
+            : "Agrupa tus productos para organizar el catalogo."}
         </p>
       </div>
 
@@ -58,7 +64,11 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             Cancelar
           </Button>
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Guardando..." : "Crear categoria"}
+            {submitting
+              ? "Guardando..."
+              : isEditing
+                ? "Guardar cambios"
+                : "Crear categoria"}
           </Button>
         </div>
       </form>

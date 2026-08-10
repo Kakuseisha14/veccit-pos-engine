@@ -3,6 +3,7 @@ import { apiFetch } from "./api";
 export interface Category {
   id: string;
   name: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -62,6 +63,16 @@ export function createCategory(name: string): Promise<{ category: Category }> {
   return apiFetch<{ category: Category }>("/categories", {
     method: "POST",
     body: JSON.stringify({ name }),
+  });
+}
+
+export function updateCategory(
+  id: string,
+  payload: { name?: string; isActive?: boolean },
+): Promise<{ category: Category }> {
+  return apiFetch<{ category: Category }>(`/categories/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
   });
 }
 
