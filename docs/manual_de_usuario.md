@@ -73,7 +73,9 @@ npm run dev
 
 ### Módulo de Inventario (Fase 3)
 - **Acceso:** En el menú lateral → **Inventario** (`/products`). El `TENANT_ADMIN` tiene control total; el `CASHIER` solo visualiza la lista de productos (sin costos).
-- **Vista por pestañas:** La pantalla usa un componente de **pestañas** al estilo TailAdmin: **Productos** y **Categorías**.
+- **Segmented control (píldora):** En la parte superior izquierda de la pantalla hay un control segmentado estilo TailAdmin (**Productos** / **Categorías**). El botón activo se resalta con fondo blanco y sombra (`bg-white shadow-card`). Al hacer clic cambia la tabla que se renderiza debajo.
+- **Botón contextual:** El botón principal (azul, arriba a la derecha de la tarjeta) es **contextual**: si estás viendo **Productos** muestra **"Agregar producto"**; si estás viendo **Categorías** muestra **"Nueva categoria"**. Las tarjetas no repiten título interno (el contexto lo da el control segmentado).
+- **Tablas estándar (UI/UX non-negotiable):** Las tablas ocupan el **100% del ancho** (`w-full`), la columna **"Acciones"** es siempre la última, alineada a la derecha (`text-right`), y los botones de acción van `justify-end` con el orden **Editar primero**, luego **Inactivar/Activar** (o **Ajustar stock**).
 - **Catálogo de productos (USD):** Botón **"Agregar producto"** (en el header de la tarjeta de Productos) para registrar SKU (se normaliza a mayúsculas), nombre, descripción, precio y costo en USD, stock inicial, stock mínimo y categoría. Solo se ofrecen las **categorías activas**.
 - **Categorías (CRUD completo):** En la pestaña **Categorías** se listan todas las categorías del comercio en una tabla con estado (Activa/Inactiva) y fecha de creación. Acciones por fila:
   - **Editar:** abre un modal para renombrar la categoría (valida nombre único).

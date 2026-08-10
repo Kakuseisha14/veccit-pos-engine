@@ -107,3 +107,23 @@ backend/src/
 3. **Arquitectura Limpia por Capas**: El dominio nunca debe depender de NestJS ni de TypeORM.
 4. **Interfaces Estrictas**: Contratos explícitos entre backend y frontend.
 5. **Seguridad Integrada**: Validaciones DTO con `class-validator`, sanitización de datos y aislamiento Multi-Tenant.
+
+---
+
+## 🎨 Consistencia UI/UX (Non-Negotiable)
+
+Estas reglas son **obligatorias** para cualquier pantalla nueva o existente del frontend. Cualquier implementación que las viole debe ser corregida antes de considerarse completa:
+
+1. **Tablas Estándar**:
+   - Todas las tablas deben ocupar el **100% del ancho** (`w-full`).
+   - La columna **"Acciones"** siempre debe ser la **última columna, alineada a la derecha** del contenedor.
+   - El texto del encabezado **"Acciones"** debe estar alineado a la derecha (`text-right`).
+
+2. **Botones de Acción**:
+   - Los botones dentro de la columna **"Acciones"** deben estar alineados al final de la celda (`justify-end`).
+   - Deben mantener un **tamaño uniforme** (mismo `size`, ej. `sm`).
+   - Orden lógico consistente: primero **"Editar"**, luego **"Inactivar"/"Eliminar"** (u otras acciones secundarias).
+
+3. **Cero Redundancia (Cards)**:
+   - Las tarjetas (Cards) **no deben tener títulos internos repetitivos** cuando el contexto ya queda claro por la navegación superior (tabs, segmented control, breadcrumbs).
+   - El botón principal (azul, accióón primaria) de la tarjeta debe ser **contextual**: cambia según la sección activa y se ubica arriba a la derecha.
