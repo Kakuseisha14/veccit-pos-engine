@@ -29,7 +29,10 @@ export const CategoriesTable: React.FC<CategoriesTableProps> = ({
 }) => {
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="flex items-center justify-end gap-2 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+      <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          Categorias
+        </h3>
         {isAdmin && (
           <Button size="sm" onClick={onAddCategory}>
             Nueva categoria
@@ -51,7 +54,7 @@ export const CategoriesTable: React.FC<CategoriesTableProps> = ({
                 Creada
               </TableCell>
               {isAdmin && (
-                <TableCell isHeader className="px-5 py-3 font-medium text-right">
+                <TableCell isHeader className="px-5 py-3 font-medium">
                   Acciones
                 </TableCell>
               )}

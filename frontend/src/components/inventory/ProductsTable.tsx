@@ -15,6 +15,9 @@ interface ProductsTableProps {
   onAdjustStock: (product: Product) => void;
 }
 
+const getStockBadgeColor = (stock: number): "success" | "warning" | "error" =>
+  stock > 10 ? "success" : stock > 0 ? "warning" : "error";
+
 export const ProductsTable: React.FC<ProductsTableProps> = ({
   products,
   isAdmin,
@@ -27,7 +30,10 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="flex items-center justify-end gap-2 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+      <div className="flex items-center justify-between gap-3 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          Productos
+        </h3>
         {isAdmin && (
           <Button size="sm" onClick={onAddProduct}>
             Agregar producto
@@ -63,7 +69,7 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
                 Estado
               </TableCell>
               {isAdmin && (
-                <TableCell isHeader className="px-5 py-3 font-medium text-right">
+                <TableCell isHeader className="px-5 py-3 font-medium">
                   Acciones
                 </TableCell>
               )}
@@ -81,7 +87,6 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
               </TableRow>
             ) : (
               products.map((product) => {
-                const lowStock = product.stock <= product.minStock;
                 return (
                   <TableRow key={product.id}>
                     <TableCell className="px-5 py-4">
@@ -109,20 +114,12 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
                       </TableCell>
                     )}
                     <TableCell className="px-5 py-4">
-                      <div className="flex items-center gap-2">
-                        {lowStock ? (
-                          <Badge variant="light" color="error">
-                            Stock bajo
-                          </Badge>
-                        ) : (
-                          <Badge variant="light" color="success">
-                            En stock
-                          </Badge>
-                        )}
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {product.stock}
-                        </span>
-                      </div>
+                      <Badge
+                        variant="light"
+                        color={getStockBadgeColor(product.stock)}
+                      >
+                        {product.stock} unds
+                      </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4">
                       {product.isActive ? (
@@ -136,8 +133,8 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
                       )}
                     </TableCell>
                     {isAdmin && (
-                      <TableCell className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <TableCell className="px-5 py-4">
+                        <div className="flex items-center gap-2">
                           <Button
                             size="sm"
                             variant="outline"
