@@ -24,7 +24,7 @@ docker compose up -d db
 cd backend
 npm install
 cp .env.example .env      # ya configura PORT=3001
-npm run migration:run     # aplica migraciones (tenants, users, tasas, inventario)
+npm run migration:run     # aplica migraciones (tenants, users, tasas, inventario, ventas)
 npm run start:dev         # en desarrollo ejecuta las migraciones pendientes automáticamente al arrancar
 ```
 - API base: `http://localhost:3001/api`
@@ -87,6 +87,15 @@ npm run dev
 - **Edición:** Botón **"Editar"** para modificar datos del producto (el stock no se edita aquí, usa el ajuste rápido).
 - **Manejo de errores:** Si falla la carga del inventario (productos/categorías), se muestra un **toast de error** flotante en vez de una caja roja estática; los errores de los formularios (crear/editar/ajustar stock/categorías) aparecen dentro del modal correspondiente.
 
+### Módulo de Ventas y POS (Fase 4)
+- **Acceso:** En el menú lateral → **POS** (`/pos`) para cobrar y **Ventas** (`/sales`) para el historial. Tanto `TENANT_ADMIN` como `CASHIER` pueden operar el POS y ver las ventas.
+- **Buscador rápido:** En el POS se busca un producto escribiendo su **SKU** o **nombre** (búsqueda en vivo). Se muestra el precio en USD y el equivalente en VES con la tasa activa del día; se agrega al carrito con la cantidad deseada.
+- **Carrito interactivo:** Lista los productos con cantidades editables y totales **duales** (USD y VES). El total en VES usa la tasa activa del día.
+- **Cobrar (Modal de Pagos Mixtos):** El botón **Cobrar** abre el modal de pagos. Se pueden combinar pagos en **USD** y **VES** (Efectivo USD, Efectivo VES, Pago Móvil, Tarjeta VES, Zelle USD, Otro). El saldo restante se recalcula en tiempo real y el cobro se habilita al cubrir el total (tolerancia de ±2 centavos).
+- **Cliente rápido:** Desde el carrito se abre el modal **"Registrar cliente"** (RIF/Cédula, nombre y teléfono) para asociar la venta sin salir del POS.
+- **Proceso de venta (ACID):** Al confirmar el cobro, el sistema valida que los productos estén activos, descuenta stock y registra la venta con sus pagos en una **única transacción** de base de datos. Se genera un **número de venta** correlativo y la venta queda como `COMPLETED`.
+- **Historial de ventas:** En **Ventas** (`/sales`) se listan las ventas del comercio con fecha, número, cliente, total en USD/VES y método de pago. Cada venta muestra su **recibo** con el detalle de items, cantidades y pagos.
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
@@ -106,7 +115,7 @@ npm run dev
 | 1 | Autenticación, Usuarios y Multi-Tenant | ✅ Completada |
 | 2 | Multimoneda y Tasa de Cambio | ✅ Completada |
 | 3 | Inventario | ✅ Completada |
-| 4 | Ventas y POS | ⬜ Pendiente |
+| 4 | Ventas y POS | ✅ Completada |
 | 5 | Cierre de Caja | ⬜ Pendiente |
 | 6 | Dashboard y Métricas | ⬜ Pendiente |
 

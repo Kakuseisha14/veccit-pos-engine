@@ -77,13 +77,14 @@ veccit-pos-engine/
 > **Objetivo**: Interfaz de facturación rápida, gestión rápida de clientes y pagos mixtos con transacciones ACID.
 
 - **Backend (NestJS)**:
-  - Entidades: `Customer`, `Sale`, `SaleItem`, `SalePayment`.
-  - Use Case: `ProcessSaleUseCase` con transacción ACID (descuento de stock + validación de pagos en USD/VES).
-  - Use Case: `QuickRegisterCustomerUseCase`.
+  - [x] Entidades: `Customer`, `Sale`, `SaleItem`, `SalePayment`.
+  - [x] Use Case: `ProcessSaleUseCase` con transacción ACID (descuento de stock + validación de pagos en USD/VES).
+  - [x] Use Case: `QuickRegisterCustomerUseCase`.
 - **Frontend (Next.js + TailAdmin)**:
-  - Pantalla del POS: Buscador rápido por SKU/código de barras, carrito interactivo con totales duales.
-  - Modal de Pagos Mixtos: Cálculo automático del saldo restante en Bolívares.
-  - Formulario desplegable para registro expreso de cliente (RIF/Cédula).
+  - [x] Pantalla del POS: Buscador rápido por SKU/código de barras, carrito interactivo con totales duales.
+  - [x] Modal de Pagos Mixtos: Cálculo automático del saldo restante en Bolívares.
+  - [x] Formulario desplegable para registro expreso de cliente (RIF/Cédula).
+  - [x] Historial de ventas y recibo imprimible.
 
 ---
 
