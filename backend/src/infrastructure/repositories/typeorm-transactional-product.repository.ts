@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import type { IProductRepository } from '../../domain/repositories/product.repository';
 import type { Product } from '../../domain/entities/product.entity';
 import { ProductEntity } from '../persistence/entities/product.entity';
@@ -11,15 +9,11 @@ import {
 import { ProductNotFoundException } from '../../domain/exceptions/product-not-found.exception';
 import { InsufficientStockException } from '../../domain/exceptions/insufficient-stock.exception';
 
-@Injectable()
-export class TypeOrmProductRepository implements IProductRepository {
-  constructor(
-    @InjectRepository(ProductEntity)
-    private readonly repository: Repository<ProductEntity>,
-  ) {}
+export class TypeOrmTransactionalProductRepository implements IProductRepository {
+  constructor(private readonly manager: EntityManager) {}
 
   async findById(id: string): Promise<Product | null> {
-    const entity = await this.repository.findOneBy({ id });
+    const entity = await this.manager.findOneBy(ProductEntity, { id });
     return entity ? toDomainProduct(entity) : null;
   }
 
@@ -27,17 +21,23 @@ export class TypeOrmProductRepository implements IProductRepository {
     tenantId: string,
     id: string,
   ): Promise<Product | null> {
-    const entity = await this.repository.findOneBy({ tenantId, id });
+    const entity = await this.manager.findOneBy(ProductEntity, {
+      tenantId,
+      id,
+    });
     return entity ? toDomainProduct(entity) : null;
   }
 
   async findBySku(tenantId: string, sku: string): Promise<Product | null> {
-    const entity = await this.repository.findOneBy({ tenantId, sku });
+    const entity = await this.manager.findOneBy(ProductEntity, {
+      tenantId,
+      sku,
+    });
     return entity ? toDomainProduct(entity) : null;
   }
 
   async listByTenant(tenantId: string): Promise<Product[]> {
-    const entities = await this.repository.find({
+    const entities = await this.manager.find(ProductEntity, {
       where: { tenantId },
       order: { name: 'ASC' },
     });
@@ -45,8 +45,8 @@ export class TypeOrmProductRepository implements IProductRepository {
   }
 
   async listLowStock(tenantId: string): Promise<Product[]> {
-    const entities = await this.repository
-      .createQueryBuilder('product')
+    const entities = await this.manager
+      .createQueryBuilder(ProductEntity, 'product')
       .where('product.tenantId = :tenantId', { tenantId })
       .andWhere('product.stock <= product.minStock')
       .orderBy('product.stock', 'ASC')
@@ -55,7 +55,7 @@ export class TypeOrmProductRepository implements IProductRepository {
   }
 
   async save(product: Product): Promise<Product> {
-    await this.repository.save(toEntityProduct(product));
+    await this.manager.save(toEntityProduct(product));
     return product;
   }
 
@@ -64,17 +64,22 @@ export class TypeOrmProductRepository implements IProductRepository {
     productId: string,
     quantity: number,
   ): Promise<void> {
-    const product = await this.repository.findOneBy({
-      tenantId,
-      id: productId,
-    });
-    if (!product) {
-      throw new ProductNotFoundException(productId);
+    const result = await this.manager.query(
+      `UPDATE "products"
+       SET "stock" = "stock" - $1, "updatedAt" = now()
+       WHERE "id" = $2 AND "tenantId" = $3 AND "stock" >= $1
+       RETURNING "id"`,
+      [quantity, productId, tenantId],
+    );
+    if (result.length === 0) {
+      const existing = await this.manager.findOneBy(ProductEntity, {
+        tenantId,
+        id: productId,
+      });
+      if (!existing) {
+        throw new ProductNotFoundException(productId);
+      }
+      throw new InsufficientStockException(productId, existing.stock, quantity);
     }
-    if (product.stock < quantity) {
-      throw new InsufficientStockException(productId, product.stock, quantity);
-    }
-    product.stock -= quantity;
-    await this.repository.save(product);
   }
 }

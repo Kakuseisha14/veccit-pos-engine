@@ -10,10 +10,12 @@ describe('AdjustStockUseCase', () => {
   let useCase: AdjustStockUseCase;
   const productRepository: jest.Mocked<IProductRepository> = {
     findById: jest.fn(),
+    findByTenantAndId: jest.fn(),
     findBySku: jest.fn(),
     listByTenant: jest.fn(),
     listLowStock: jest.fn(),
     save: jest.fn(),
+    decreaseStock: jest.fn(),
   };
   const stockAdjustmentRepository: jest.Mocked<IStockAdjustmentRepository> = {
     listByTenant: jest.fn(),
