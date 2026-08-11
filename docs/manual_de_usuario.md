@@ -74,15 +74,15 @@ npm run dev
 ### Módulo de Inventario (Fase 3)
 - **Acceso:** En el menú lateral → **Inventario** (`/products`). El `TENANT_ADMIN` tiene control total; el `CASHIER` solo visualiza la lista de productos (sin costos).
 - **Segmented control (píldora):** En la parte superior izquierda de la pantalla hay un control segmentado estilo TailAdmin (**Productos** / **Categorías**). El botón activo se resalta con fondo blanco y sombra (`bg-white shadow-card`). Al hacer clic cambia la tabla que se renderiza debajo.
-- **Botón contextual:** El botón principal (azul, arriba a la derecha de la tarjeta) es **contextual**: si estás viendo **Productos** muestra **"Agregar producto"**; si estás viendo **Categorías** muestra **"Nueva categoria"**. Las tarjetas no repiten título interno (el contexto lo da el control segmentado).
-- **Tablas estándar (UI/UX non-negotiable):** Las tablas ocupan el **100% del ancho** (`w-full`), la columna **"Acciones"** es siempre la última, alineada a la derecha (`text-right`), y los botones de acción van `justify-end` con el orden **Editar primero**, luego **Inactivar/Activar** (o **Ajustar stock**).
+- **Botón contextual:** El botón principal (azul, arriba a la derecha de la tarjeta) es **contextual**: si estás viendo **Productos** muestra **"Agregar producto"**; si estás viendo **Categorías** muestra **"Nueva categoria"**. La cabecera de la tarjeta muestra el **título de la sección** en negrita a la izquierda (`flex justify-between items-center`).
+- **Tablas estándar (UI/UX non-negotiable):** Las tablas ocupan el **100% del ancho** (`w-full`), la columna **"Acciones"** es siempre la última y sus botones van en un contenedor `flex items-center gap-2` de flujo natural, con tamaño uniforme y orden **Editar primero**, luego **Inactivar/Activar** (o **Ajustar stock**).
 - **Catálogo de productos (USD):** Botón **"Agregar producto"** (en el header de la tarjeta de Productos) para registrar SKU (se normaliza a mayúsculas), nombre, descripción, precio y costo en USD, stock inicial, stock mínimo y categoría. Solo se ofrecen las **categorías activas**.
 - **Categorías (CRUD completo):** En la pestaña **Categorías** se listan todas las categorías del comercio en una tabla con estado (Activa/Inactiva) y fecha de creación. Acciones por fila:
   - **Editar:** abre un modal para renombrar la categoría (valida nombre único).
   - **Inactivar/Activar:** cambia el estado de la categoría vía `PATCH /api/categories/:id`.
   - **Nueva categoria:** botón en el header de la tabla para crear (vía `POST /api/categories`).
 - **Precios duales:** La tabla muestra el **precio en USD** y su equivalente en **VES** usando la tasa activa del día.
-- **Indicadores de stock:** Badge **Verde "En stock"** si el stock supera el mínimo, y **Rojo "Stock bajo"** si `stock <= minStock`. Un banner de advertencia lista los productos bajo mínimos.
+- **Indicadores de stock:** Badge dinámico con la **cantidad** (ej. **"20 unds"**): **verde** si `stock > 10`, **amarillo (warning)** si `0 < stock <= 10`, **rojo (error)** si `stock === 0`. Un banner de advertencia lista los productos bajo el stock mínimo.
 - **Ajuste rápido de stock:** Botón **"Ajustar stock"** por producto → modal con Entrada (+)/Salida (-), cantidad y motivo. Las salidas no pueden dejar stock negativo (se rechazan con `InsufficientStockException`).
 - **Edición:** Botón **"Editar"** para modificar datos del producto (el stock no se edita aquí, usa el ajuste rápido).
 - **Manejo de errores:** Si falla la carga del inventario (productos/categorías), se muestra un **toast de error** flotante en vez de una caja roja estática; los errores de los formularios (crear/editar/ajustar stock/categorías) aparecen dentro del modal correspondiente.

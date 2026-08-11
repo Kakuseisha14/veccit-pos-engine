@@ -120,10 +120,11 @@ Estas reglas son **obligatorias** para cualquier pantalla nueva o existente del 
    - El texto del encabezado **"Acciones"** debe estar alineado a la derecha (`text-right`).
 
 2. **Botones de Acción**:
-   - Los botones dentro de la columna **"Acciones"** deben estar alineados al final de la celda (`justify-end`).
+   - Los botones dentro de la columna **"Acciones"** viven en un contenedor `flex items-center gap-2` de **flujo natural** dentro de su celda (sin forzar alineación con `justify-end`/`ml-auto`).
    - Deben mantener un **tamaño uniforme** (mismo `size`, ej. `sm`).
    - Orden lógico consistente: primero **"Editar"**, luego **"Inactivar"/"Eliminar"** (u otras acciones secundarias).
 
 3. **Cero Redundancia (Cards)**:
-   - Las tarjetas (Cards) **no deben tener títulos internos repetitivos** cuando el contexto ya queda claro por la navegación superior (tabs, segmented control, breadcrumbs).
-   - El botón principal (azul, accióón primaria) de la tarjeta debe ser **contextual**: cambia según la sección activa y se ubica arriba a la derecha.
+   - La cabecera de la tarjeta usa `flex justify-between items-center`: el **título de la sección** (negrita, alineado a la izquierda) y el **botón de acción principal contextual** (azul, arriba a la derecha).
+   - El botón primario cambia según la sección activa (ej. "Agregar producto" en Productos, "Nueva categoria" en Categorías).
+   - No duplicar botones de acción que pertenecen a otra sección ni repetir controles de navegación dentro de la tarjeta.
