@@ -18,6 +18,7 @@ import { formatUSD, formatVES } from "@/lib/inventory";
 import {
   listSales,
   PAYMENT_METHOD_LABELS,
+  voidSale,
   type Sale,
 } from "@/lib/sales";
 
@@ -33,12 +34,14 @@ const formatDate = (iso: string): string =>
 export const SalesHistoryView: React.FC = () => {
   const { user } = useAuth();
   const { rate } = useRate();
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
   const rateVES = rate?.rateVES ?? null;
+  const isAdmin = user?.role === "TENANT_ADMIN";
 
   const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Sale | null>(null);
+  const [voiding, setVoiding] = useState<Sale | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -158,7 +161,7 @@ export const SalesHistoryView: React.FC = () => {
                       </Badge>
                     ) : (
                       <Badge variant="light" color="dark">
-                        {sale.status}
+                        Anulada
                       </Badge>
                     )}
                   </TableCell>
@@ -171,6 +174,16 @@ export const SalesHistoryView: React.FC = () => {
                       >
                         Ver recibo
                       </Button>
+                      {isAdmin && sale.status === "COMPLETED" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                          onClick={() => setVoiding(sale)}
+                        >
+                          Anular
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -185,6 +198,24 @@ export const SalesHistoryView: React.FC = () => {
         isOpen={selected !== null}
         onClose={() => setSelected(null)}
       />
+
+      {voiding && (
+        <VoidSaleModal
+          sale={voiding}
+          onClose={() => setVoiding(null)}
+          onVoided={(voided) => {
+            setSales((prev) =>
+              prev.map((item) => (item.id === voided.id ? voided : item)),
+            );
+            showSuccess(
+              "Venta anulada",
+              `La venta ${voided.saleNumber} fue anulada`,
+            );
+            setVoiding(null);
+          }}
+          onError={(message) => showError("No se pudo anular", message)}
+        />
+      )}
     </div>
   );
 };
@@ -267,6 +298,63 @@ const ReceiptModal: React.FC<{
 
       <div className="mt-5 flex justify-end">
         <Button onClick={onClose}>Cerrar</Button>
+      </div>
+    </Modal>
+  );
+};
+
+const VoidSaleModal: React.FC<{
+  sale: Sale;
+  onClose: () => void;
+  onVoided: (sale: Sale) => void;
+  onError: (message: string) => void;
+}> = ({ sale, onClose, onVoided, onError }) => {
+  const [reason, setReason] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  return (
+    <Modal isOpen onClose={onClose} className="max-w-sm p-6">
+      <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+        Anular venta {sale.saleNumber}
+      </h3>
+      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        La venta por {formatUSD(sale.totalUSD)} sera marcada como anulada y el
+        stock de los productos se repondra automaticamente.
+      </p>
+      <div className="mt-4">
+        <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Motivo de la anulacion
+        </label>
+        <input
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          maxLength={300}
+          placeholder="Ej: error de caja, cliente se arrepintio"
+          className="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90 dark:focus:border-brand-500"
+        />
+      </div>
+      <div className="mt-5 flex justify-end gap-2">
+        <Button size="sm" variant="outline" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button
+          size="sm"
+          disabled={submitting}
+          className="bg-red-600 text-white shadow-theme-xs hover:bg-red-700 disabled:bg-red-400"
+          onClick={() => {
+            setSubmitting(true);
+            void voidSale(sale.id, reason.trim() || undefined)
+              .then(({ sale: voided }) => onVoided(voided))
+              .catch((err: unknown) =>
+                onError(
+                  err instanceof Error ? err.message : "Error al anular la venta",
+                ),
+              )
+              .finally(() => setSubmitting(false));
+          }}
+        >
+          {submitting ? "Anulando..." : "Anular venta"}
+        </Button>
       </div>
     </Modal>
   );

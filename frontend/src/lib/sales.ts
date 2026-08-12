@@ -45,6 +45,7 @@ export interface Sale {
   saleNumber: string;
   customerId: string | null;
   userId: string;
+  shiftId: string | null;
   items: SaleItem[];
   payments: SalePayment[];
   subtotalUSD: number;
@@ -54,6 +55,9 @@ export interface Sale {
   totalVES: number;
   status: string;
   createdAt: string;
+  voidedAt: string | null;
+  voidedByUserId: string | null;
+  voidReason: string | null;
 }
 
 export interface ProcessSalePayload {
@@ -114,4 +118,14 @@ export function processSale(
 
 export function listSales(): Promise<{ sales: Sale[] }> {
   return apiFetch<{ sales: Sale[] }>("/sales");
+}
+
+export function voidSale(
+  id: string,
+  reason?: string,
+): Promise<{ sale: Sale }> {
+  return apiFetch<{ sale: Sale }>(`/sales/${id}/void`, {
+    method: "POST",
+    body: JSON.stringify(reason ? { reason } : {}),
+  });
 }
