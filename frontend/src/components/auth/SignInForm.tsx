@@ -6,6 +6,7 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -46,11 +47,32 @@ export default function SignInForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
+            {/* Logo Veccit - cambia según el tema */}
+            <div className="flex justify-center mb-6">
+              {/* Logo modo claro (sin fondo, letras blancas - visible sobre fondo blanco con azul) */}
+              <Image
+                src="/images/logo/VeccitLogo2Sinfondo1.png"
+                alt="Veccit"
+                width={160}
+                height={80}
+                className="object-contain block dark:hidden"
+                priority
+              />
+              {/* Logo modo oscuro (Light1 - letras negras visibles sobre fondo oscuro) */}
+              <Image
+                src="/images/logo/VeccitLogo2Light1.png"
+                alt="Veccit"
+                width={160}
+                height={80}
+                className="object-contain hidden dark:block"
+                priority
+              />
+            </div>
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
               Iniciar Sesion
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Ingresa tu correo y contrasena para continuar.
+              Potenciando tu comercio con tecnología inteligente
             </p>
           </div>
           <div>
