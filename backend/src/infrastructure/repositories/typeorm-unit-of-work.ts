@@ -6,6 +6,7 @@ import type {
 } from '../../application/services/unit-of-work';
 import { TypeOrmTransactionalProductRepository } from './typeorm-transactional-product.repository';
 import { TypeOrmTransactionalSaleRepository } from './typeorm-transactional-sale.repository';
+import { TypeOrmTransactionalCashRegisterRepository } from './typeorm-transactional-cash-register.repository';
 
 @Injectable()
 export class TypeOrmUnitOfWork implements IUnitOfWork {
@@ -23,6 +24,9 @@ export class TypeOrmUnitOfWork implements IUnitOfWork {
           queryRunner.manager,
         ),
         saleRepository: new TypeOrmTransactionalSaleRepository(
+          queryRunner.manager,
+        ),
+        cashRegisterRepository: new TypeOrmTransactionalCashRegisterRepository(
           queryRunner.manager,
         ),
       };

@@ -29,6 +29,9 @@ export class SaleEntity {
   @Column({ type: 'uuid' })
   userId!: string;
 
+  @Column({ type: 'uuid', nullable: true })
+  shiftId!: string | null;
+
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   subtotalUSD!: string;
 
@@ -46,6 +49,15 @@ export class SaleEntity {
 
   @Column({ type: 'varchar', length: 20, default: 'COMPLETED' })
   status!: SaleStatus;
+
+  @Column({ type: 'timestamp', nullable: true })
+  voidedAt!: Date | null;
+
+  @Column({ type: 'uuid', nullable: true })
+  voidedByUserId!: string | null;
+
+  @Column({ type: 'varchar', length: 300, nullable: true })
+  voidReason!: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;

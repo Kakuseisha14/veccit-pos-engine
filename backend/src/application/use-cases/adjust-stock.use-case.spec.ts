@@ -16,6 +16,7 @@ describe('AdjustStockUseCase', () => {
     listLowStock: jest.fn(),
     save: jest.fn(),
     decreaseStock: jest.fn(),
+    increaseStock: jest.fn(),
   };
   const stockAdjustmentRepository: jest.Mocked<IStockAdjustmentRepository> = {
     listByTenant: jest.fn(),

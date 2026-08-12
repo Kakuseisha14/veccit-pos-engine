@@ -82,4 +82,21 @@ export class TypeOrmTransactionalProductRepository implements IProductRepository
       throw new InsufficientStockException(productId, existing.stock, quantity);
     }
   }
+
+  async increaseStock(
+    tenantId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<void> {
+    const result = await this.manager.query(
+      `UPDATE "products"
+       SET "stock" = "stock" + $1, "updatedAt" = now()
+       WHERE "id" = $2 AND "tenantId" = $3
+       RETURNING "id"`,
+      [quantity, productId, tenantId],
+    );
+    if (result.length === 0) {
+      throw new ProductNotFoundException(productId);
+    }
+  }
 }

@@ -13,6 +13,7 @@ import { UsersModule } from './presentation/http/modules/users.module';
 import { RatesModule } from './presentation/http/modules/rates.module';
 import { InventoryModule } from './presentation/http/modules/inventory.module';
 import { SalesModule } from './presentation/http/modules/sales.module';
+import { CashRegisterModule } from './presentation/http/modules/cash-register.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { SalesModule } from './presentation/http/modules/sales.module';
     RatesModule,
     InventoryModule,
     SalesModule,
+    CashRegisterModule,
     HealthModule,
   ],
   providers: [

@@ -205,4 +205,69 @@ describe('Sale', () => {
     expect(sale.subtotalUSD).toBe(22.39);
     expect(sale.totalUSD).toBe(22.39);
   });
+
+  it('anula la venta registrando quien la anulo, el motivo y la fecha', () => {
+    const sale = Sale.create({
+      ...baseInput,
+      items: twoColaItems,
+      payments: [
+        {
+          paymentMethod: 'CASH_USD',
+          amount: 5,
+          currency: 'USD',
+          exchangeRateVES: 60,
+        },
+      ],
+    });
+
+    const voided = sale.void({
+      voidedByUserId: 'admin-1',
+      reason: 'Cliente se arrepintio',
+    });
+
+    expect(voided.status).toBe('VOIDED');
+    expect(voided.voidedByUserId).toBe('admin-1');
+    expect(voided.voidReason).toBe('Cliente se arrepintio');
+    expect(voided.voidedAt).toBeInstanceOf(Date);
+    expect(voided.id).toBe(sale.id);
+    expect(voided.totalUSD).toBe(sale.totalUSD);
+  });
+
+  it('no permite anular una venta ya anulada', () => {
+    const sale = Sale.create({
+      ...baseInput,
+      items: twoColaItems,
+      payments: [
+        {
+          paymentMethod: 'CASH_USD',
+          amount: 5,
+          currency: 'USD',
+          exchangeRateVES: 60,
+        },
+      ],
+    });
+    const voided = sale.void({ voidedByUserId: 'admin-1' });
+
+    expect(() => voided.void({ voidedByUserId: 'admin-1' })).toThrow(
+      'ya fue anulada',
+    );
+  });
+
+  it('vincula la venta al turno de caja si se indica un shiftId', () => {
+    const sale = Sale.create({
+      ...baseInput,
+      shiftId: 'shift-1',
+      items: twoColaItems,
+      payments: [
+        {
+          paymentMethod: 'CASH_USD',
+          amount: 5,
+          currency: 'USD',
+          exchangeRateVES: 60,
+        },
+      ],
+    });
+
+    expect(sale.shiftId).toBe('shift-1');
+  });
 });

@@ -8,6 +8,7 @@ import { PRODUCT_REPOSITORY } from '../../domain/repositories/product.repository
 import { STOCK_ADJUSTMENT_REPOSITORY } from '../../domain/repositories/stock-adjustment.repository';
 import { CUSTOMER_REPOSITORY } from '../../domain/repositories/customer.repository';
 import { SALE_REPOSITORY } from '../../domain/repositories/sale.repository';
+import { CASH_REGISTER_REPOSITORY } from '../../domain/repositories/cash-register.repository';
 import { UNIT_OF_WORK } from '../../application/services/unit-of-work';
 import { TenantEntity } from './entities/tenant.entity';
 import { UserEntity } from './entities/user.entity';
@@ -19,6 +20,7 @@ import { CustomerEntity } from './entities/customer.entity';
 import { SaleEntity } from './entities/sale.entity';
 import { SaleItemEntity } from './entities/sale-item.entity';
 import { SalePaymentEntity } from './entities/sale-payment.entity';
+import { CashRegisterEntity } from './entities/cash-register.entity';
 import { TypeOrmTenantRepository } from '../repositories/typeorm-tenant.repository';
 import { TypeOrmUserRepository } from '../repositories/typeorm-user.repository';
 import { TypeOrmExchangeRateRepository } from '../repositories/typeorm-exchange-rate.repository';
@@ -27,6 +29,7 @@ import { TypeOrmProductRepository } from '../repositories/typeorm-product.reposi
 import { TypeOrmStockAdjustmentRepository } from '../repositories/typeorm-stock-adjustment.repository';
 import { TypeOrmCustomerRepository } from '../repositories/typeorm-customer.repository';
 import { TypeOrmSaleRepository } from '../repositories/typeorm-sale.repository';
+import { TypeOrmCashRegisterRepository } from '../repositories/typeorm-cash-register.repository';
 import { TypeOrmUnitOfWork } from '../repositories/typeorm-unit-of-work';
 
 @Global()
@@ -43,6 +46,7 @@ import { TypeOrmUnitOfWork } from '../repositories/typeorm-unit-of-work';
       SaleEntity,
       SaleItemEntity,
       SalePaymentEntity,
+      CashRegisterEntity,
     ]),
   ],
   providers: [
@@ -60,6 +64,10 @@ import { TypeOrmUnitOfWork } from '../repositories/typeorm-unit-of-work';
     },
     { provide: CUSTOMER_REPOSITORY, useClass: TypeOrmCustomerRepository },
     { provide: SALE_REPOSITORY, useClass: TypeOrmSaleRepository },
+    {
+      provide: CASH_REGISTER_REPOSITORY,
+      useClass: TypeOrmCashRegisterRepository,
+    },
     { provide: UNIT_OF_WORK, useClass: TypeOrmUnitOfWork },
   ],
   exports: [
@@ -71,6 +79,7 @@ import { TypeOrmUnitOfWork } from '../repositories/typeorm-unit-of-work';
     STOCK_ADJUSTMENT_REPOSITORY,
     CUSTOMER_REPOSITORY,
     SALE_REPOSITORY,
+    CASH_REGISTER_REPOSITORY,
     UNIT_OF_WORK,
   ],
 })

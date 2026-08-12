@@ -10,6 +10,7 @@ import { CustomerEntity } from './entities/customer.entity';
 import { SaleEntity } from './entities/sale.entity';
 import { SaleItemEntity } from './entities/sale-item.entity';
 import { SalePaymentEntity } from './entities/sale-payment.entity';
+import { CashRegisterEntity } from './entities/cash-register.entity';
 
 export default new DataSource({
   type: 'postgres',
@@ -29,6 +30,7 @@ export default new DataSource({
     SaleEntity,
     SaleItemEntity,
     SalePaymentEntity,
+    CashRegisterEntity,
   ],
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
   synchronize: false,

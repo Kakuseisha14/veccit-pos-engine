@@ -14,6 +14,7 @@ describe('ListProductsUseCase', () => {
     listLowStock: jest.fn(),
     save: jest.fn(),
     decreaseStock: jest.fn(),
+    increaseStock: jest.fn(),
   };
   const categoryRepository: jest.Mocked<ICategoryRepository> = {
     findById: jest.fn(),

@@ -42,7 +42,7 @@ describe('TypeOrmUnitOfWork', () => {
     expect(work).toHaveBeenCalledTimes(1);
   });
 
-  it('provee repositorios transaccionales (producto y venta) al trabajo', async () => {
+  it('provee repositorios transaccionales (producto, venta y caja) al trabajo', async () => {
     let receivedUnit: unknown;
     await unitOfWork.runInTransaction((unit) => {
       receivedUnit = unit;
@@ -52,10 +52,12 @@ describe('TypeOrmUnitOfWork', () => {
     const unit = receivedUnit as {
       productRepository: unknown;
       saleRepository: unknown;
+      cashRegisterRepository: unknown;
     };
     expect(unit).toBeDefined();
     expect(unit.productRepository).toBeDefined();
     expect(unit.saleRepository).toBeDefined();
+    expect(unit.cashRegisterRepository).toBeDefined();
   });
 
   it('hace rollback automatico y no hace commit si el trabajo lanza un error', async () => {

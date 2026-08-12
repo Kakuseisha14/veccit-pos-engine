@@ -4,6 +4,8 @@ import type { ICustomerRepository } from '../../domain/repositories/customer.rep
 import type { IExchangeRateRepository } from '../../domain/repositories/exchange-rate.repository';
 import type { IProductRepository } from '../../domain/repositories/product.repository';
 import type { ISaleRepository } from '../../domain/repositories/sale.repository';
+import type { ICashRegisterRepository } from '../../domain/repositories/cash-register.repository';
+import { CashRegister } from '../../domain/entities/cash-register.entity';
 import { Product } from '../../domain/entities/product.entity';
 import { CustomerNotFoundException } from '../../domain/exceptions/customer-not-found.exception';
 import { ProductNotFoundException } from '../../domain/exceptions/product-not-found.exception';
@@ -37,17 +39,26 @@ describe('ProcessSaleUseCase', () => {
     listLowStock: jest.fn(),
     save: jest.fn(),
     decreaseStock: jest.fn(),
+    increaseStock: jest.fn(),
   };
   const saleRepository: jest.Mocked<ISaleRepository> = {
     findById: jest.fn(),
     findByTenantAndId: jest.fn(),
     listByTenant: jest.fn(),
+    listByShift: jest.fn(),
     nextSaleNumber: jest.fn(),
+    save: jest.fn(),
+  };
+  const cashRegisterRepository: jest.Mocked<ICashRegisterRepository> = {
+    findOpenByTenantAndCashier: jest.fn(),
+    findByTenantAndId: jest.fn(),
+    listByTenant: jest.fn(),
     save: jest.fn(),
   };
   const unit: ITransactionUnit = {
     productRepository,
     saleRepository,
+    cashRegisterRepository,
   };
 
   const tenantId = 'tenant-1';
@@ -102,6 +113,7 @@ describe('ProcessSaleUseCase', () => {
     saleRepository.nextSaleNumber.mockResolvedValue('V-0001');
     productRepository.decreaseStock.mockResolvedValue();
     saleRepository.save.mockImplementation(async (sale) => sale);
+    cashRegisterRepository.findOpenByTenantAndCashier.mockResolvedValue(null);
   });
 
   it('procesa una venta en USD con descuento de stock y guardado', async () => {
@@ -225,5 +237,23 @@ describe('ProcessSaleUseCase', () => {
       ProductNotFoundException,
     );
     expect(productRepository.decreaseStock).not.toHaveBeenCalled();
+  });
+
+  it('vincula la venta al turno de caja abierto del cajero', async () => {
+    const openShift = CashRegister.open({
+      tenantId,
+      cashierId: userId,
+      openingAmountUSD: 50,
+    });
+    cashRegisterRepository.findOpenByTenantAndCashier.mockResolvedValue(
+      openShift,
+    );
+
+    const result = await useCase.execute(baseInput);
+
+    expect(result.sale.shiftId).toBe(openShift.id);
+    expect(
+      cashRegisterRepository.findOpenByTenantAndCashier,
+    ).toHaveBeenCalledWith(tenantId, userId);
   });
 });

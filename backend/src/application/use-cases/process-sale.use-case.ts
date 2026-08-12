@@ -70,11 +70,18 @@ export class ProcessSaleUseCase {
         input.tenantId,
       );
 
+      const openShift =
+        await unit.cashRegisterRepository.findOpenByTenantAndCashier(
+          input.tenantId,
+          input.userId,
+        );
+
       const sale = Sale.create({
         tenantId: input.tenantId,
         saleNumber,
         customerId: input.customerId ?? null,
         userId: input.userId,
+        shiftId: openShift?.id ?? null,
         items: itemInputs,
         payments,
         exchangeRateVES: activeRate,

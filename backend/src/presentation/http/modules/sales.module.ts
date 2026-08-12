@@ -3,6 +3,7 @@ import { ProcessSaleUseCase } from '../../../application/use-cases/process-sale.
 import { QuickRegisterCustomerUseCase } from '../../../application/use-cases/quick-register-customer.use-case';
 import { ListCustomersUseCase } from '../../../application/use-cases/list-customers.use-case';
 import { ListSalesUseCase } from '../../../application/use-cases/list-sales.use-case';
+import { VoidSaleUseCase } from '../../../application/use-cases/void-sale.use-case';
 import { CustomersController } from '../controllers/customers.controller';
 import { SalesController } from '../controllers/sales.controller';
 
@@ -13,6 +14,7 @@ import { SalesController } from '../controllers/sales.controller';
     QuickRegisterCustomerUseCase,
     ListCustomersUseCase,
     ListSalesUseCase,
+    VoidSaleUseCase,
   ],
 })
 export class SalesModule {}

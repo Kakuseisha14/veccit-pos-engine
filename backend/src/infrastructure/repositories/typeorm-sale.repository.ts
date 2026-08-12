@@ -50,6 +50,16 @@ export class TypeOrmSaleRepository implements ISaleRepository {
     );
   }
 
+  async listByShift(tenantId: string, shiftId: string): Promise<Sale[]> {
+    const entities = await this.repository.find({
+      where: { tenantId, shiftId },
+      order: { createdAt: 'ASC' },
+    });
+    return Promise.all(
+      entities.map((entity) => this.assemble(entity.id, entity)),
+    );
+  }
+
   async nextSaleNumber(tenantId: string): Promise<string> {
     const count = await this.repository.countBy({ tenantId });
     return `V-${String(count + 1).padStart(4, '0')}`;

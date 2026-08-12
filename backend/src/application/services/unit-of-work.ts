@@ -1,9 +1,11 @@
 import type { IProductRepository } from '../../domain/repositories/product.repository';
 import type { ISaleRepository } from '../../domain/repositories/sale.repository';
+import type { ICashRegisterRepository } from '../../domain/repositories/cash-register.repository';
 
 export interface ITransactionUnit {
   productRepository: IProductRepository;
   saleRepository: ISaleRepository;
+  cashRegisterRepository: ICashRegisterRepository;
 }
 
 export interface IUnitOfWork {

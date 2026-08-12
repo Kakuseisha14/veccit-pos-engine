@@ -12,6 +12,11 @@ export interface IProductRepository {
     productId: string,
     quantity: number,
   ): Promise<void>;
+  increaseStock(
+    tenantId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<void>;
 }
 
 export const PRODUCT_REPOSITORY = Symbol('IProductRepository');

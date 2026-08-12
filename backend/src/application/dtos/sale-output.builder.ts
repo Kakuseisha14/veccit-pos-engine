@@ -7,6 +7,7 @@ export function toSaleOutput(sale: Sale): SaleOutput {
     saleNumber: sale.saleNumber,
     customerId: sale.customerId,
     userId: sale.userId,
+    shiftId: sale.shiftId,
     items: sale.items.map((item) => ({
       id: item.id,
       productId: item.productId,
@@ -32,5 +33,8 @@ export function toSaleOutput(sale: Sale): SaleOutput {
     totalVES: sale.totalVES,
     status: sale.status,
     createdAt: sale.createdAt,
+    voidedAt: sale.voidedAt,
+    voidedByUserId: sale.voidedByUserId,
+    voidReason: sale.voidReason,
   };
 }

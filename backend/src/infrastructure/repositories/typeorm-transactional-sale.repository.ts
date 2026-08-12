@@ -40,6 +40,16 @@ export class TypeOrmTransactionalSaleRepository implements ISaleRepository {
     );
   }
 
+  async listByShift(tenantId: string, shiftId: string): Promise<Sale[]> {
+    const entities = await this.manager.find(SaleEntity, {
+      where: { tenantId, shiftId },
+      order: { createdAt: 'ASC' },
+    });
+    return Promise.all(
+      entities.map((entity) => this.assemble(entity.id, entity)),
+    );
+  }
+
   async nextSaleNumber(tenantId: string): Promise<string> {
     const count = await this.manager.count(SaleEntity, {
       where: { tenantId },

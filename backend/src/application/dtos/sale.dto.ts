@@ -25,6 +25,7 @@ export interface SaleOutput {
   saleNumber: string;
   customerId: string | null;
   userId: string;
+  shiftId: string | null;
   items: SaleItemOutput[];
   payments: SalePaymentOutput[];
   subtotalUSD: number;
@@ -34,4 +35,7 @@ export interface SaleOutput {
   totalVES: number;
   status: string;
   createdAt: Date;
+  voidedAt: Date | null;
+  voidedByUserId: string | null;
+  voidReason: string | null;
 }

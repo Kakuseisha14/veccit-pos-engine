@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { SaleItem, CreateSaleItemInput } from './sale-item.entity';
 import { SalePayment, CreateSalePaymentInput } from './sale-payment.entity';
 import { InvalidPaymentTotalException } from '../exceptions/invalid-payment-total.exception';
+import { SaleAlreadyVoidedException } from '../exceptions/sale-already-voided.exception';
 
 export type SaleStatus = 'COMPLETED' | 'VOIDED';
 
@@ -10,6 +11,7 @@ export interface CreateSaleInput {
   saleNumber: string;
   customerId?: string | null;
   userId: string;
+  shiftId?: string | null;
   items: CreateSaleItemInput[];
   payments: CreateSalePaymentInput[];
   exchangeRateVES: number;
@@ -23,6 +25,7 @@ export class Sale {
     public readonly saleNumber: string,
     public readonly customerId: string | null,
     public readonly userId: string,
+    public readonly shiftId: string | null,
     public readonly items: SaleItem[],
     public readonly payments: SalePayment[],
     public readonly subtotalUSD: number,
@@ -32,6 +35,9 @@ export class Sale {
     public readonly totalVES: number,
     public readonly status: SaleStatus,
     public readonly createdAt: Date,
+    public readonly voidedAt: Date | null,
+    public readonly voidedByUserId: string | null,
+    public readonly voidReason: string | null,
   ) {}
 
   static create(input: CreateSaleInput): Sale {
@@ -71,6 +77,7 @@ export class Sale {
       input.saleNumber,
       input.customerId ?? null,
       input.userId,
+      input.shiftId ?? null,
       items,
       payments,
       subtotalUSD,
@@ -80,6 +87,35 @@ export class Sale {
       totalVES,
       'COMPLETED',
       new Date(),
+      null,
+      null,
+      null,
+    );
+  }
+
+  void(input: { voidedByUserId: string; reason?: string | null }): Sale {
+    if (this.status === 'VOIDED') {
+      throw new SaleAlreadyVoidedException(this.id);
+    }
+    return new Sale(
+      this.id,
+      this.tenantId,
+      this.saleNumber,
+      this.customerId,
+      this.userId,
+      this.shiftId,
+      this.items,
+      this.payments,
+      this.subtotalUSD,
+      this.taxUSD,
+      this.totalUSD,
+      this.exchangeRateVES,
+      this.totalVES,
+      'VOIDED',
+      this.createdAt,
+      new Date(),
+      input.voidedByUserId,
+      input.reason?.trim() || null,
     );
   }
 }

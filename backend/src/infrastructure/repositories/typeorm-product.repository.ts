@@ -77,4 +77,20 @@ export class TypeOrmProductRepository implements IProductRepository {
     product.stock -= quantity;
     await this.repository.save(product);
   }
+
+  async increaseStock(
+    tenantId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<void> {
+    const product = await this.repository.findOneBy({
+      tenantId,
+      id: productId,
+    });
+    if (!product) {
+      throw new ProductNotFoundException(productId);
+    }
+    product.stock += quantity;
+    await this.repository.save(product);
+  }
 }

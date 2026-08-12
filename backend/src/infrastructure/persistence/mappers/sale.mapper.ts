@@ -19,6 +19,7 @@ export function toDomainSale(
     entity.saleNumber,
     entity.customerId,
     entity.userId,
+    entity.shiftId,
     itemEntities.map(toDomainSaleItem),
     paymentEntities.map(toDomainSalePayment),
     parseFloat(entity.subtotalUSD),
@@ -28,6 +29,9 @@ export function toDomainSale(
     parseFloat(entity.totalVES),
     entity.status,
     entity.createdAt,
+    entity.voidedAt,
+    entity.voidedByUserId,
+    entity.voidReason,
   );
 }
 
@@ -38,6 +42,7 @@ export function toEntitySale(sale: Sale): SaleEntity {
   entity.saleNumber = sale.saleNumber;
   entity.customerId = sale.customerId;
   entity.userId = sale.userId;
+  entity.shiftId = sale.shiftId;
   entity.subtotalUSD = sale.subtotalUSD.toFixed(2);
   entity.taxUSD = sale.taxUSD.toFixed(2);
   entity.totalUSD = sale.totalUSD.toFixed(2);
@@ -45,6 +50,9 @@ export function toEntitySale(sale: Sale): SaleEntity {
   entity.totalVES = sale.totalVES.toFixed(2);
   entity.status = sale.status;
   entity.createdAt = sale.createdAt;
+  entity.voidedAt = sale.voidedAt;
+  entity.voidedByUserId = sale.voidedByUserId;
+  entity.voidReason = sale.voidReason;
   return entity;
 }
 
