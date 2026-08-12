@@ -105,10 +105,18 @@ npm run dev
 - **Historial de turnos:** Tabla con todos los turnos del comercio: fecha de apertura/cierre, montos y estado (Abierta/Cerrada), con botón **Resumen** por fila.
 - **Anulación de ventas (solo ADMIN):** En **Ventas** (`/sales`), el `TENANT_ADMIN` ve el botón **"Anular"** en las ventas completadas. Al anular se registra el motivo, la venta pasa a estado `Anulada` y el **stock de los productos se repone automáticamente** en una transacción ACID. Las ventas anuladas se excluyen del efectivo esperado del turno.
 
+### Módulo de Dashboard y Métricas (Fase 6)
+- **Acceso:** En el menú lateral → **Dashboard** (`/`). Exclusivo del `TENANT_ADMIN` (el `CASHIER` no ve costos ni ganancias).
+- **Tarjetas de métricas:** Ventas del día (cantidad), **Ingresos del día** (USD), **Ganancia bruta del día** (USD = ingresos menos costo de los productos vendidos) y sus equivalentes de los **últimos 7 días**.
+- **Gráfico interactivo de 7 días:** Barras con los **ingresos diarios en USD** de los últimos 7 días (los días sin ventas se muestran en cero).
+- **Producto más vendido:** Tarjeta con el producto de mayor cantidad vendida en la semana, su SKU y unidades.
+- **Definición de ganancia bruta:** Se calcula con el campo `costUSD` del producto (no se expone al cajero); si un producto ya no existe en el catálogo se asume costo 0. Las ventas **anuladas** se excluyen de todas las métricas.
+- **Backend:** Endpoint `GET /api/metrics/dashboard` (Swagger: `/api/docs`), documento en `manual_de_usuario.md`.
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
-| `TENANT_ADMIN` | Dashboard, inventario CRUD, tasas de cambio, gestión de usuarios, anulación de facturas |
+| `TENANT_ADMIN` | Dashboard y métricas, inventario CRUD, tasas de cambio, gestión de usuarios, anulación de facturas |
 | `CASHIER` | Solo POS y cierre de caja |
 
 ---
@@ -126,7 +134,7 @@ npm run dev
 | 3 | Inventario | ✅ Completada |
 | 4 | Ventas y POS | ✅ Completada |
 | 5 | Cierre de Caja | ✅ Completada |
-| 6 | Dashboard y Métricas | ⬜ Pendiente |
+| 6 | Dashboard y Métricas | ✅ Completada |
 
 ## 📢 Nota para el Equipo
 Este manual debe actualizarse **después de cada ejecución exitosa** junto con la documentación Swagger de la API (ver regla innegociable en `arquitectura_maestra.md`).

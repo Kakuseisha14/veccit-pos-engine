@@ -104,10 +104,12 @@ veccit-pos-engine/
 > **Objetivo**: Panel visual de alto impacto para el dueño con resumen de ventas, ganancias y gráficos.
 
 - **Backend (NestJS)**:
-  - Use Case: `GetDashboardMetricsUseCase` (Ventas totales del día, ganancia bruta USD, producto más vendido, serie de ventas de 7 días).
+  - [x] Use Case: `GetDashboardMetricsUseCase` (Ventas totales del día, ganancia bruta USD, producto más vendido, serie de ventas de 7 días).
+  - [x] Endpoint `GET /metrics/dashboard` (exclusivo `TENANT_ADMIN`).
 - **Frontend (Next.js + TailAdmin)**:
-  - Cards de métricas en TailAdmin Dashboard.
-  - Gráfico interactivo de ventas de los últimos 7 días.
+  - [x] Cards de métricas en TailAdmin Dashboard.
+  - [x] Gráfico interactivo de ventas de los últimos 7 días.
+  - [x] Limpieza de módulos de prueba del menú (calendario, perfil, forms, tables, UI elements, charts demo, ecommerce).
 
 ---
 
