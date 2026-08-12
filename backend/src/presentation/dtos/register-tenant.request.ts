@@ -1,12 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { TENANT_PLANS } from '../../domain/value-objects/tenant-plan';
 
 export class RegisterTenantRequestDto {
   @ApiProperty({ example: 'Mi Tienda C.A.' })
@@ -42,4 +44,9 @@ export class RegisterTenantRequestDto {
   @IsString()
   @MaxLength(120)
   businessName?: string;
+
+  @ApiPropertyOptional({ example: 'FREE', enum: TENANT_PLANS })
+  @IsOptional()
+  @IsIn(TENANT_PLANS)
+  plan?: string;
 }

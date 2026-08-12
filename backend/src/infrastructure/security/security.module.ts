@@ -7,6 +7,7 @@ import { RolesGuard } from '../../presentation/http/guards/roles.guard';
 import { TenantGuard } from '../../presentation/http/guards/tenant.guard';
 import { BcryptPasswordHasher } from './bcrypt-password-hasher';
 import { JwtTokenService } from './jwt-token.service';
+import { SuperAdminBootstrapService } from './super-admin-bootstrap';
 
 @Global()
 @Module({
@@ -17,6 +18,7 @@ import { JwtTokenService } from './jwt-token.service';
     JwtAuthGuard,
     RolesGuard,
     TenantGuard,
+    SuperAdminBootstrapService,
   ],
   exports: [
     PASSWORD_HASHER,

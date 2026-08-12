@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
 import type { User } from '../../domain/entities/user.entity';
+import type { Role } from '../../domain/value-objects/role';
 import { UserEntity } from '../persistence/entities/user.entity';
 import { toDomainUser, toEntityUser } from '../persistence/mappers/user.mapper';
 
@@ -39,6 +40,11 @@ export class TypeOrmUserRepository implements IUserRepository {
 
   async listByTenant(tenantId: string): Promise<User[]> {
     const entities = await this.repository.findBy({ tenantId });
+    return entities.map(toDomainUser);
+  }
+
+  async listByRole(role: Role): Promise<User[]> {
+    const entities = await this.repository.findBy({ role });
     return entities.map(toDomainUser);
   }
 

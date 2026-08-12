@@ -10,6 +10,7 @@ describe('RegisterTenantUseCase', () => {
   const tenantRepository: jest.Mocked<ITenantRepository> = {
     findById: jest.fn(),
     findByEmail: jest.fn(),
+    list: jest.fn(),
     save: jest.fn(),
   };
   const userRepository: jest.Mocked<IUserRepository> = {
@@ -18,6 +19,7 @@ describe('RegisterTenantUseCase', () => {
     findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
+    listByRole: jest.fn(),
     save: jest.fn(),
   };
   const passwordHasher: jest.Mocked<IPasswordHasher> = {
@@ -74,5 +76,15 @@ describe('RegisterTenantUseCase', () => {
       EmailAlreadyInUseException,
     );
     expect(tenantRepository.save).not.toHaveBeenCalled();
+  });
+
+  it('crea el tenant con el plan indicado si se recibe', async () => {
+    tenantRepository.findByEmail.mockResolvedValue(null);
+    userRepository.existsByEmail.mockResolvedValue(false);
+    passwordHasher.hash.mockResolvedValue('hashed-password');
+
+    const result = await useCase.execute({ ...validInput, plan: 'PRO' });
+
+    expect(result.tenant.plan).toBe('PRO');
   });
 });

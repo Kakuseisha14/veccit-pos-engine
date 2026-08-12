@@ -1,5 +1,6 @@
 import { LoginUseCase } from './login.use-case';
 import { User } from '../../domain/entities/user.entity';
+import { Tenant } from '../../domain/entities/tenant.entity';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
 import type { ITenantRepository } from '../../domain/repositories/tenant.repository';
 import type { IPasswordHasher } from '../services/password-hasher.service';
@@ -34,6 +35,33 @@ function buildUser(overrides: Partial<User> = {}): User {
   );
 }
 
+function buildTenant(overrides: Partial<Tenant> = {}): Tenant {
+  const base = new Tenant(
+    't1',
+    'Tienda',
+    't@tienda.com',
+    null,
+    null,
+    'FREE' as const,
+    true,
+    new Date('2026-01-01T00:00:00Z'),
+    new Date('2026-01-01T00:00:00Z'),
+  );
+  return new Tenant(
+    overrides.id ?? base.id,
+    overrides.name ?? base.name,
+    overrides.email ?? base.email,
+    overrides.phone === undefined ? base.phone : overrides.phone,
+    overrides.businessName === undefined
+      ? base.businessName
+      : overrides.businessName,
+    overrides.plan ?? base.plan,
+    overrides.isActive ?? base.isActive,
+    overrides.createdAt ?? base.createdAt,
+    overrides.updatedAt ?? base.updatedAt,
+  );
+}
+
 describe('LoginUseCase', () => {
   let useCase: LoginUseCase;
   const userRepository: jest.Mocked<IUserRepository> = {
@@ -42,11 +70,13 @@ describe('LoginUseCase', () => {
     findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
+    listByRole: jest.fn(),
     save: jest.fn(),
   };
   const tenantRepository: jest.Mocked<ITenantRepository> = {
     findById: jest.fn(),
     findByEmail: jest.fn(),
+    list: jest.fn(),
     save: jest.fn(),
   };
   const passwordHasher: jest.Mocked<IPasswordHasher> = {
@@ -71,17 +101,7 @@ describe('LoginUseCase', () => {
   it('devuelve el token y los datos de sesion si las credenciales son validas', async () => {
     userRepository.findByEmail.mockResolvedValue(buildUser());
     passwordHasher.compare.mockResolvedValue(true);
-    tenantRepository.findById.mockResolvedValue({
-      id: 't1',
-      name: 'Tienda',
-      email: 't@tienda.com',
-      phone: null,
-      businessName: null,
-      plan: 'FREE',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    tenantRepository.findById.mockResolvedValue(buildTenant());
     tokenService.sign.mockResolvedValue('jwt-token');
 
     const result = await useCase.execute({

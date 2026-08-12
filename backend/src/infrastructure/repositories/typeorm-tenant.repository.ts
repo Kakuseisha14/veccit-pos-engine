@@ -28,6 +28,13 @@ export class TypeOrmTenantRepository implements ITenantRepository {
     return entity ? toDomainTenant(entity) : null;
   }
 
+  async list(): Promise<Tenant[]> {
+    const entities = await this.repository.find({
+      order: { createdAt: 'DESC' },
+    });
+    return entities.map(toDomainTenant);
+  }
+
   async save(tenant: Tenant): Promise<Tenant> {
     await this.repository.save(toEntityTenant(tenant));
     return tenant;

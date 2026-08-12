@@ -1,4 +1,5 @@
 import type { Role } from '../../domain/value-objects/role';
+import type { TenantPlan } from '../../domain/value-objects/tenant-plan';
 
 export interface SessionUser {
   id: string;
@@ -22,6 +23,7 @@ export interface RegisterTenantInput {
   tenantAdminName: string;
   phone?: string | null;
   businessName?: string | null;
+  plan?: TenantPlan;
 }
 
 export interface RegisterTenantOutput {

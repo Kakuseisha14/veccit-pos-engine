@@ -12,6 +12,7 @@ describe('CreateUserUseCase', () => {
     findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
+    listByRole: jest.fn(),
     save: jest.fn(),
   };
   const passwordHasher: jest.Mocked<IPasswordHasher> = {

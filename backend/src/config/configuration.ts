@@ -12,6 +12,10 @@ export interface AppConfig {
     secret: string;
     expiresIn: string;
   };
+  superAdmin: {
+    email: string;
+    password: string;
+  };
 }
 
 export default (): AppConfig => ({
@@ -27,5 +31,9 @@ export default (): AppConfig => ({
   jwt: {
     secret: process.env.JWT_SECRET ?? 'dev-secret-do-not-use',
     expiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
+  },
+  superAdmin: {
+    email: process.env.SUPER_ADMIN_EMAIL ?? '',
+    password: process.env.SUPER_ADMIN_PASSWORD ?? '',
   },
 });

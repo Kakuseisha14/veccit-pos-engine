@@ -40,6 +40,7 @@ describe('UpdateUserUseCase', () => {
     findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
+    listByRole: jest.fn(),
     save: jest.fn(),
   };
 

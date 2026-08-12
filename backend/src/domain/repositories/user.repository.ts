@@ -1,4 +1,5 @@
 import type { User } from '../entities/user.entity';
+import type { Role } from '../value-objects/role';
 
 export interface IUserRepository {
   findById(id: string): Promise<User | null>;
@@ -6,6 +7,7 @@ export interface IUserRepository {
   findByTenantAndId(tenantId: string, id: string): Promise<User | null>;
   existsByEmail(email: string): Promise<boolean>;
   listByTenant(tenantId: string): Promise<User[]>;
+  listByRole(role: Role): Promise<User[]>;
   save(user: User): Promise<User>;
 }
 

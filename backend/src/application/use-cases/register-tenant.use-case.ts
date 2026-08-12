@@ -42,7 +42,7 @@ export class RegisterTenantUseCase {
       email,
       phone: input.phone,
       businessName: input.businessName,
-      plan: 'FREE',
+      plan: input.plan ?? 'FREE',
     });
     await this.tenantRepository.save(tenant);
 

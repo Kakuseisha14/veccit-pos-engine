@@ -10,6 +10,7 @@ import { StorageModule } from './infrastructure/storage/storage.module';
 import { TenantContextInterceptor } from './presentation/http/interceptors/tenant-context.interceptor';
 import { HealthModule } from './presentation/http/controllers/health.module';
 import { AuthModule } from './presentation/http/modules/auth.module';
+import { TenantsModule } from './presentation/http/modules/tenants.module';
 import { UsersModule } from './presentation/http/modules/users.module';
 import { RatesModule } from './presentation/http/modules/rates.module';
 import { InventoryModule } from './presentation/http/modules/inventory.module';
@@ -32,6 +33,7 @@ import { UploadsModule } from './presentation/http/modules/uploads.module';
     SecurityModule,
     StorageModule,
     AuthModule,
+    TenantsModule,
     UsersModule,
     RatesModule,
     InventoryModule,

@@ -41,6 +41,7 @@ describe('UploadAvatarUseCase', () => {
     findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
+    listByRole: jest.fn(),
     save: jest.fn(),
   };
   const avatarStorage: jest.Mocked<IAvatarStorageService> = {

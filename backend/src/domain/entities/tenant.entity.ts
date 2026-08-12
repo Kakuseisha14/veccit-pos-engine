@@ -36,4 +36,52 @@ export class Tenant {
       now,
     );
   }
+
+  withPlan(plan: TenantPlan): Tenant {
+    return new Tenant(
+      this.id,
+      this.name,
+      this.email,
+      this.phone,
+      this.businessName,
+      plan,
+      this.isActive,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
+  withStatus(isActive: boolean): Tenant {
+    return new Tenant(
+      this.id,
+      this.name,
+      this.email,
+      this.phone,
+      this.businessName,
+      this.plan,
+      isActive,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
+  withProfile(input: {
+    name?: string;
+    phone?: string | null;
+    businessName?: string | null;
+  }): Tenant {
+    return new Tenant(
+      this.id,
+      input.name !== undefined ? input.name.trim() : this.name,
+      this.email,
+      input.phone !== undefined ? input.phone?.trim() || null : this.phone,
+      input.businessName !== undefined
+        ? input.businessName?.trim() || null
+        : this.businessName,
+      this.plan,
+      this.isActive,
+      this.createdAt,
+      new Date(),
+    );
+  }
 }
