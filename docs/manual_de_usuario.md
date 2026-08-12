@@ -45,17 +45,26 @@ npm run dev
 
 > **Fase 1 completada**: Autenticación, Usuarios y Multi-Tenant.
 
-### Registro de un nuevo comercio
-1. Ve a **http://localhost:3000/signup**.
-2. Completa: Nombre del Comercio, Nombre del Administrador, Correo y Contraseña (mínimo 8 caracteres).
-3. Presiona **Registrar Comercio**. Se crean el tenant y su usuario `TENANT_ADMIN`, y la sesión inicia automáticamente.
+### Registro de un nuevo comercio (solo el dueño de la plataforma)
+1. El dueño inicia sesión con su cuenta de **Super Admin** (creada la primera vez con `SUPER_ADMIN_EMAIL` / `SUPER_ADMIN_PASSWORD` del backend).
+2. Se dirige a **Comercios** (`/platform`).
+3. Presiona **"Nuevo comercio"** y completa: Nombre del Comercio, Razon Social (opcional), Nombre del Administrador, Correo, Teléfono (opcional), Contraseña (mínimo 8 caracteres) y **Plan** (`FREE` / `PRO`).
+4. Se crean el tenant y su usuario `TENANT_ADMIN`. El cliente recibe el acceso y gestiona su comercio por su cuenta.
+5. El registro público (`/signup`) fue **eliminado**: solo el `SUPER_ADMIN` crea comercios.
+6. **Gestión de comercios:** desde `/platform` el `SUPER_ADMIN` puede cambiar el **plan** de cada comercio y **activar/desactivar** su operación (`PATCH /api/tenants/:id`). Desactivar un comercio impide que sus usuarios operen.
 
 ### Inicio de sesión
 1. Ve a **http://localhost:3000/signin**.
 2. Ingresa tu correo y contraseña.
 3. Según tu rol serás redirigido automáticamente:
+   - `SUPER_ADMIN` → plataforma de comercios (`/platform`).
    - `TENANT_ADMIN` → panel de administración.
-   - `CASHIER` → POS (próximas fases).
+   - `CASHIER` → POS (`/pos`).
+4. **Cerrar sesión real:** en el menú del usuario (esquina superior derecha) → **"Cerrar sesion"**. El backend limpia la cookie HttpOnly (`POST /api/auth/logout`).
+5. **Cambio de contraseña:** en el mismo menú → **"Cambiar contrasena"** (pide la actual y una nueva de mínimo 8 caracteres; `PATCH /api/auth/password`). Disponible para cualquier rol autenticado.
+6. **Mi comercio (solo ADMIN):** `TENANT_ADMIN` edita nombre, razón social y teléfono de su negocio desde el menú del usuario (`PATCH /api/tenants/me`).
+7. **Sesión expirada:** si el token vence, cualquier llamada a la API devuelve 401 y la interfaz redirige automáticamente a `/signin`.
+8. **Acceso por rol en el menú lateral:** el `SUPER_ADMIN` solo ve **Comercios**; el `TENANT_ADMIN` ve Dashboard, Inventario, POS, Ventas, Caja y Usuarios; el `CASHIER` solo ve POS, Ventas y Caja.
 
 ### Gestión de usuarios del comercio (solo ADMIN)
 - Desde el panel protegido, el `TENANT_ADMIN` puede crear cajeros (`CASHIER`) y listar los usuarios del comercio.

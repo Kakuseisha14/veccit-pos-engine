@@ -132,6 +132,40 @@ veccit-pos-engine/
 
 ---
 
+### 🌐 Fase 8: Modelo de Roles SaaS y Plataforma (SUPER_ADMIN)
+> **Objetivo**: Consolidar el modelo de roles multitenant como SaaS. Solo el dueño (`SUPER_ADMIN`) registra comercios y gestiona sus planes; el registro público se elimina.
+
+- **Backend (NestJS)**:
+  - [x] `POST /auth/register-tenant` protegido con `JwtAuthGuard` + `RolesGuard` y `@Roles('SUPER_ADMIN')`; respeta el campo `plan` del DTO (`FREE`/`PRO`, defecto `FREE`).
+  - [x] Bootstrap automático del primer `SUPER_ADMIN` (sin tenant) desde `SUPER_ADMIN_EMAIL` / `SUPER_ADMIN_PASSWORD` (`SuperAdminBootstrapService` via `OnApplicationBootstrap`); `IUserRepository.listByRole`.
+  - [x] Entidad `Tenant` con métodos inmutables `withPlan` / `withStatus`; `ITenantRepository.list()` (orden por `createdAt` DESC).
+  - [x] Módulo `TenantsManagement`: `GET /tenants` y `PATCH /tenants/:id` (plan / isActive), ambos solo `SUPER_ADMIN`, con `ListTenantsUseCase` / `UpdateTenantUseCase` / `TenantNotFoundException`.
+- **Frontend (Next.js + TailAdmin)**:
+  - [x] `HOME_BY_ROLE.SUPER_ADMIN = /platform`; ítem **Comercios** en el menú lateral exclusivo del `SUPER_ADMIN` (demo de negocio oculto para la plataforma).
+  - [x] Página **Comercios** (`/platform`): tabla con comercio, email, plan (selector `FREE`/`PRO`), estado y activar/desactivar; modal **"Nuevo comercio"** (nombre, razón social, admin, email, teléfono, contraseña y plan).
+  - [x] Registro público (`/signup` + `SignUpForm` + enlace en `SignInForm`) **eliminado**; `registerTenant` ya no auto-inicia sesión (la creación la ejecuta el `SUPER_ADMIN` desde el panel).
+- **Tests**: `RegisterTenantUseCase` (respeto de plan), `ListTenantsUseCase`, `UpdateTenantUseCase` (plan, estado, no encontrado). **Backend**: typecheck ✅, lint ✅, 139 tests ✅. **Frontend**: lint ✅, tsc ✅, build ✅.
+
+---
+
+### 🔑 Fase 9: Sesión, Cuenta y Acceso por Rol
+> **Objetivo**: Cierre de sesión real, cambio de contraseña, edición de los datos del comercio y enrutamiento/guardas por rol (el `CASHIER` no accede al Dashboard).
+
+- **Backend (NestJS)**:
+  - [x] `POST /auth/logout` limpia la cookie HttpOnly `access_token`.
+  - [x] `PATCH /auth/password` — cambio de contraseña del usuario autenticado (verifica la actual; invalida si no coincide; no exige re-login). Excepción `InvalidCredentialsException` con mensaje personalizable.
+  - [x] `PATCH /tenants/me` — edición de nombre/razón social/teléfono del propio comercio (`UpdateTenantProfileUseCase` con `Tenant.withProfile`; registrado antes de `/tenants/:id` para no colisionar).
+  - [x] `User.withPasswordHash` (método inmutable).
+- **Frontend (Next.js + TailAdmin)**:
+  - [x] **Interceptor global 401** en `apiFetch`/`apiFormFetch` → handler registrado por `AuthContext` que limpia la sesión y redirige a `/signin`.
+  - [x] `logout` real llama a `POST /auth/logout` antes de limpiar el estado.
+  - [x] **RoleGuard** (`allowedRoles`) aplicado por página: Dashboard solo `TENANT_ADMIN`; Comercios solo `SUPER_ADMIN`; POS/Inventario/Ventas/Caja `TENANT_ADMIN`+`CASHIER`; Usuarios solo `TENANT_ADMIN`. `HOME_BY_ROLE.CASHIER = /pos`.
+  - [x] Menú lateral con roles por ítem (CASHIER: POS/Ventas/Caja; SUPER_ADMIN: Comercios).
+  - [x] Modal **"Cambiar contrasena"** y **"Mi comercio"** (solo `TENANT_ADMIN`) en el dropdown del usuario.
+- **Tests**: `ChangePasswordUseCase` (éxito, contraseña incorrecta, usuario inexistente), `UpdateTenantProfileUseCase` (éxito, sin cambios no guarda, no encontrado), logout en `AuthController`. **Backend**: typecheck ✅, lint ✅, 146 tests ✅. **Frontend**: lint ✅, tsc ✅, build ✅.
+
+---
+
 ## 🔍 Proceso de Verificación y Cero Deuda Técnica
 Al finalizar cada hito:
 1. Verificación de compilación TypeScript (`tsc --noEmit`).
