@@ -62,6 +62,21 @@ export class User {
     return this.copyWith({ avatarUrl });
   }
 
+  withPasswordHash(passwordHash: string): User {
+    return new User(
+      this.id,
+      this.tenantId,
+      this.name,
+      this.email,
+      passwordHash,
+      this.role,
+      this.isActive,
+      this.avatarUrl,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
   activate(): User {
     return this.copyWith({ isActive: true });
   }

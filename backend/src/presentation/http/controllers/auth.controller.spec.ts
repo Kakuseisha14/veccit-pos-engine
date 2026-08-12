@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { LoginUseCase } from '../../../application/use-cases/login.use-case';
 import { RegisterTenantUseCase } from '../../../application/use-cases/register-tenant.use-case';
 import { GetCurrentSessionUseCase } from '../../../application/use-cases/get-current-session.use-case';
+import { ChangePasswordUseCase } from '../../../application/use-cases/change-password.use-case';
 import { InvalidCredentialsException } from '../../../domain/exceptions/invalid-credentials.exception';
 
 describe('AuthController', () => {
@@ -12,10 +13,14 @@ describe('AuthController', () => {
   const registerTenantUseCase = { execute: jest.fn() };
   const loginUseCase = { execute: jest.fn() };
   const getCurrentSessionUseCase = { execute: jest.fn() };
+  const changePasswordUseCase = { execute: jest.fn() };
   const config = { get: jest.fn().mockReturnValue('development') };
 
-  const buildResponse = (): jest.Mocked<Pick<Response, 'cookie'>> => ({
+  const buildResponse = (): jest.Mocked<
+    Pick<Response, 'cookie' | 'clearCookie'>
+  > => ({
     cookie: jest.fn(),
+    clearCookie: jest.fn(),
   });
 
   beforeEach(() => {
@@ -24,6 +29,7 @@ describe('AuthController', () => {
       registerTenantUseCase as unknown as RegisterTenantUseCase,
       loginUseCase as unknown as LoginUseCase,
       getCurrentSessionUseCase as unknown as GetCurrentSessionUseCase,
+      changePasswordUseCase as unknown as ChangePasswordUseCase,
       config as unknown as ConfigService,
     );
   });
@@ -79,5 +85,17 @@ describe('AuthController', () => {
         res as unknown as Response,
       ),
     ).rejects.toThrow(internalError);
+  });
+
+  it('limpia la cookie en logout', async () => {
+    const res = buildResponse();
+
+    const result = await controller.logout(res as unknown as Response);
+
+    expect(res.clearCookie).toHaveBeenCalledWith(
+      'access_token',
+      expect.objectContaining({ httpOnly: true }),
+    );
+    expect(result).toEqual({ ok: true });
   });
 });
