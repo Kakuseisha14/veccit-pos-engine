@@ -11,6 +11,18 @@ export class ApiError extends Error {
   }
 }
 
+let onUnauthorizedHandler: (() => void) | null = null;
+
+export function setOnUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorizedHandler = handler;
+}
+
+function handleUnauthorized(): void {
+  if (onUnauthorizedHandler) {
+    onUnauthorizedHandler();
+  }
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
@@ -23,6 +35,11 @@ export async function apiFetch<T>(
     },
     credentials: "include",
   });
+
+  if (res.status === 401) {
+    handleUnauthorized();
+    throw new ApiError(401, "Su sesión ha expirado");
+  }
 
   if (!res.ok) {
     let message = `Error ${res.status}`;
@@ -52,6 +69,11 @@ export async function apiFormFetch<T>(
     body,
     credentials: "include",
   });
+
+  if (res.status === 401) {
+    handleUnauthorized();
+    throw new ApiError(401, "Su sesión ha expirado");
+  }
 
   if (!res.ok) {
     let message = `Error ${res.status}`;

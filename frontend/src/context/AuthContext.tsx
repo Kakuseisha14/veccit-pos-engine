@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, setOnUnauthorizedHandler } from "@/lib/api";
 import {
   HOME_BY_ROLE,
   type SessionTenant,
@@ -22,14 +22,6 @@ interface AuthContextValue {
   user: SessionUser | null;
   tenant: SessionTenant | null;
   login: (email: string, password: string) => Promise<void>;
-  registerTenant: (input: {
-    tenantName: string;
-    tenantAdminName: string;
-    email: string;
-    password: string;
-    businessName?: string;
-    phone?: string;
-  }) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
@@ -44,6 +36,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<SessionUser | null>(null);
   const [tenant, setTenant] = useState<SessionTenant | null>(null);
 
+  const clearSession = useCallback(() => {
+    setUser(null);
+    setTenant(null);
+    setStatus("unauthenticated");
+    router.replace("/signin");
+  }, [router]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -57,20 +56,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(session.user);
         setTenant(session.tenant);
         setStatus("authenticated");
-      } catch {
+      } catch (err) {
         if (cancelled) return;
+        if (err instanceof Object && "status" in err && err.status === 401) {
+          return;
+        }
         setUser(null);
         setTenant(null);
         setStatus("unauthenticated");
       }
     };
 
+    setOnUnauthorizedHandler(() => {
+      clearSession();
+    });
     void loadSession();
 
     return () => {
       cancelled = true;
+      setOnUnauthorizedHandler(null);
     };
-  }, []);
+  }, [clearSession]);
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -89,30 +95,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     [router],
   );
 
-  const registerTenant = useCallback(
-    async (input: {
-      tenantName: string;
-      tenantAdminName: string;
-      email: string;
-      password: string;
-      businessName?: string;
-      phone?: string;
-    }) => {
-      await apiFetch("/auth/register-tenant", {
-        method: "POST",
-        body: JSON.stringify(input),
-      });
-      await login(input.email, input.password);
-    },
-    [login],
-  );
-
   const logout = useCallback(async () => {
-    setUser(null);
-    setTenant(null);
-    setStatus("unauthenticated");
-    router.replace("/signin");
-  }, [router]);
+    try {
+      await apiFetch("/auth/logout", { method: "POST" });
+    } catch {
+      // la cookie se limpia de todas formas en el cliente
+    }
+    clearSession();
+  }, [clearSession]);
 
   const refreshSession = useCallback(async () => {
     try {
@@ -137,7 +127,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         user,
         tenant,
         login,
-        registerTenant,
         logout,
         refreshSession,
       }}
