@@ -4,12 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
+import { useAuth } from "../context/AuthContext";
 import {
   BoxCubeIcon,
   BoxIconLine,
   ChevronDownIcon,
   DollarLineIcon,
   GridIcon,
+  GroupIcon,
   HorizontaLDots,
   TaskIcon,
 } from "../icons/index";
@@ -47,11 +49,20 @@ const navItems: NavItem[] = [
     name: "Caja",
     path: "/register",
   },
+  {
+    icon: <GroupIcon />,
+    name: "Usuarios",
+    path: "/users",
+  },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { user } = useAuth();
   const pathname = usePathname();
+
+  const visibleNavItems: NavItem[] =
+    user?.role === "TENANT_ADMIN" ? navItems : navItems.filter((item) => item.name !== "Usuarios");
 
   const renderMenuItems = (items: NavItem[]) => (
     <ul className="flex flex-col gap-4">
@@ -183,8 +194,8 @@ const AppSidebar: React.FC = () => {
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
 
   const findActiveSubmenu = (): number | null => {
-    for (let index = 0; index < navItems.length; index++) {
-      const nav = navItems[index];
+    for (let index = 0; index < visibleNavItems.length; index++) {
+      const nav = visibleNavItems[index];
       if (
         nav.subItems &&
         nav.subItems.some((subItem) => isActive(subItem.path))
@@ -291,7 +302,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {renderMenuItems(navItems)}
+              {renderMenuItems(visibleNavItems)}
             </div>
           </div>
         </nav>
@@ -301,3 +312,4 @@ const AppSidebar: React.FC = () => {
 };
 
 export default AppSidebar;
+

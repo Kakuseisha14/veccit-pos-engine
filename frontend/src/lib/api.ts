@@ -41,3 +41,32 @@ export async function apiFetch<T>(
 
   return res.json() as Promise<T>;
 }
+
+export async function apiFormFetch<T>(
+  path: string,
+  body: FormData,
+  method: "POST" | "PATCH" = "POST",
+): Promise<T> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method,
+    body,
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    let message = `Error ${res.status}`;
+    try {
+      const parsed: unknown = await res.json();
+      if (parsed && typeof parsed === "object" && "message" in parsed) {
+        const raw = (parsed as { message: unknown }).message;
+        if (Array.isArray(raw)) message = raw.join(", ");
+        else if (typeof raw === "string") message = raw;
+      }
+    } catch {
+      // keep default message when response has no JSON body
+    }
+    throw new ApiError(res.status, message);
+  }
+
+  return res.json() as Promise<T>;
+}

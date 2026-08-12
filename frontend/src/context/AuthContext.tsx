@@ -31,6 +31,7 @@ interface AuthContextValue {
     phone?: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -113,9 +114,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     router.replace("/signin");
   }, [router]);
 
+  const refreshSession = useCallback(async () => {
+    try {
+      const session = await apiFetch<{
+        user: SessionUser;
+        tenant: SessionTenant | null;
+      }>("/auth/me");
+      setUser(session.user);
+      setTenant(session.tenant);
+      setStatus("authenticated");
+    } catch {
+      setUser(null);
+      setTenant(null);
+      setStatus("unauthenticated");
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ status, user, tenant, login, registerTenant, logout }}
+      value={{
+        status,
+        user,
+        tenant,
+        login,
+        registerTenant,
+        logout,
+        refreshSession,
+      }}
     >
       {children}
     </AuthContext.Provider>

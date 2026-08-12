@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useAuth } from "@/context/AuthContext";
+import { UserAvatar } from "../users/UserAvatar";
 
 const ROLE_LABELS: Record<string, string> = {
   TENANT_ADMIN: "Administrador",
@@ -22,21 +23,18 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
 
-  const initials = (user?.name ?? "?")
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
   return (
     <div className="relative">
       <button
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
-        <span className="mr-3 flex items-center justify-center overflow-hidden rounded-full h-11 w-11 bg-brand-100 text-brand-700 dark:bg-brand-500/20 dark:text-brand-200">
-          <span className="font-semibold text-theme-sm">{initials}</span>
+        <span className="mr-3 flex items-center justify-center overflow-hidden rounded-full h-11 w-11">
+          <UserAvatar
+            name={user?.name ?? "?"}
+            avatarUrl={user?.avatarUrl ?? null}
+            className="h-11 w-11"
+          />
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">
