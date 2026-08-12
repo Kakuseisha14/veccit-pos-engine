@@ -13,14 +13,17 @@ import {
   GridIcon,
   GroupIcon,
   HorizontaLDots,
+  PlugInIcon,
   TaskIcon,
 } from "../icons/index";
+import type { Role } from "../lib/roles";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  roles?: Role[];
 };
 
 const navItems: NavItem[] = [
@@ -28,31 +31,43 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Dashboard",
     path: "/",
+    roles: ["TENANT_ADMIN"],
   },
   {
     icon: <BoxCubeIcon />,
     name: "Inventario",
     path: "/products",
+    roles: ["TENANT_ADMIN"],
   },
   {
     icon: <DollarLineIcon />,
     name: "POS",
     path: "/pos",
+    roles: ["TENANT_ADMIN", "CASHIER"],
   },
   {
     icon: <BoxIconLine />,
     name: "Ventas",
     path: "/sales",
+    roles: ["TENANT_ADMIN", "CASHIER"],
   },
   {
     icon: <TaskIcon />,
     name: "Caja",
     path: "/register",
+    roles: ["TENANT_ADMIN", "CASHIER"],
   },
   {
     icon: <GroupIcon />,
     name: "Usuarios",
     path: "/users",
+    roles: ["TENANT_ADMIN"],
+  },
+  {
+    icon: <PlugInIcon />,
+    name: "Comercios",
+    path: "/platform",
+    roles: ["SUPER_ADMIN"],
   },
 ];
 
@@ -61,8 +76,9 @@ const AppSidebar: React.FC = () => {
   const { user } = useAuth();
   const pathname = usePathname();
 
-  const visibleNavItems: NavItem[] =
-    user?.role === "TENANT_ADMIN" ? navItems : navItems.filter((item) => item.name !== "Usuarios");
+const visibleNavItems: NavItem[] = navItems.filter((item) =>
+    item.roles?.includes(user?.role ?? "TENANT_ADMIN"),
+  );
 
   const renderMenuItems = (items: NavItem[]) => (
     <ul className="flex flex-col gap-4">
@@ -257,30 +273,34 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/">
+        <Link href="/" className="flex flex-col items-center gap-2 text-center w-full">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
+                className="dark:hidden object-contain w-auto h-16"
+                src="/images/logo/VeccitLogo2Sinfondo1.png"
+                alt="Veccit ERP"
+                width={160}
+                height={64}
               />
               <Image
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
+                className="hidden dark:block object-contain w-auto h-16"
+                src="/images/logo/VeccitLogo2Light1.png"
+                alt="Veccit ERP"
+                width={160}
+                height={64}
               />
+              <span className="text-[11px] text-gray-500 dark:text-gray-400 font-medium leading-tight max-w-[180px]">
+                Gestión Integral POS & ERP
+              </span>
             </>
           ) : (
             <Image
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
+              src="/images/logo/VeccitLogo2Sinfondo1.png"
+              alt="Veccit ERP"
               width={32}
               height={32}
+              className="object-contain w-auto h-8"
             />
           )}
         </Link>

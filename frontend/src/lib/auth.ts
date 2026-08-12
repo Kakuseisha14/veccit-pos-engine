@@ -26,7 +26,7 @@ export interface RegisterTenantResponse {
 }
 
 export const HOME_BY_ROLE: Record<Role, string> = {
-  SUPER_ADMIN: "/",
+  SUPER_ADMIN: "/platform",
   TENANT_ADMIN: "/",
-  CASHIER: "/",
+  CASHIER: "/pos",
 };
