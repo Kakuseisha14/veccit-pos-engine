@@ -45,6 +45,7 @@ describe('ProcessSaleUseCase', () => {
     findById: jest.fn(),
     findByTenantAndId: jest.fn(),
     listByTenant: jest.fn(),
+    listCompletedSince: jest.fn(),
     listByShift: jest.fn(),
     nextSaleNumber: jest.fn(),
     save: jest.fn(),

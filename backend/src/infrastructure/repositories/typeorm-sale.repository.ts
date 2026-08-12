@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, MoreThanOrEqual, Repository } from 'typeorm';
 import type { ISaleRepository } from '../../domain/repositories/sale.repository';
 import type { Sale } from '../../domain/entities/sale.entity';
 import { SaleEntity } from '../persistence/entities/sale.entity';
@@ -53,6 +53,20 @@ export class TypeOrmSaleRepository implements ISaleRepository {
   async listByShift(tenantId: string, shiftId: string): Promise<Sale[]> {
     const entities = await this.repository.find({
       where: { tenantId, shiftId },
+      order: { createdAt: 'ASC' },
+    });
+    return Promise.all(
+      entities.map((entity) => this.assemble(entity.id, entity)),
+    );
+  }
+
+  async listCompletedSince(tenantId: string, since: Date): Promise<Sale[]> {
+    const entities = await this.repository.find({
+      where: {
+        tenantId,
+        status: 'COMPLETED',
+        createdAt: MoreThanOrEqual(since),
+      },
       order: { createdAt: 'ASC' },
     });
     return Promise.all(

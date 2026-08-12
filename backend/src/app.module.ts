@@ -14,6 +14,7 @@ import { RatesModule } from './presentation/http/modules/rates.module';
 import { InventoryModule } from './presentation/http/modules/inventory.module';
 import { SalesModule } from './presentation/http/modules/sales.module';
 import { CashRegisterModule } from './presentation/http/modules/cash-register.module';
+import { MetricsModule } from './presentation/http/modules/metrics.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { CashRegisterModule } from './presentation/http/modules/cash-register.mo
     InventoryModule,
     SalesModule,
     CashRegisterModule,
+    MetricsModule,
     HealthModule,
   ],
   providers: [

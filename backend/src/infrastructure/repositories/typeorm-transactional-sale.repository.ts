@@ -1,4 +1,4 @@
-import { EntityManager, In } from 'typeorm';
+import { EntityManager, In, MoreThanOrEqual } from 'typeorm';
 import type { ISaleRepository } from '../../domain/repositories/sale.repository';
 import type { Sale } from '../../domain/entities/sale.entity';
 import { SaleEntity } from '../persistence/entities/sale.entity';
@@ -43,6 +43,20 @@ export class TypeOrmTransactionalSaleRepository implements ISaleRepository {
   async listByShift(tenantId: string, shiftId: string): Promise<Sale[]> {
     const entities = await this.manager.find(SaleEntity, {
       where: { tenantId, shiftId },
+      order: { createdAt: 'ASC' },
+    });
+    return Promise.all(
+      entities.map((entity) => this.assemble(entity.id, entity)),
+    );
+  }
+
+  async listCompletedSince(tenantId: string, since: Date): Promise<Sale[]> {
+    const entities = await this.manager.find(SaleEntity, {
+      where: {
+        tenantId,
+        status: 'COMPLETED',
+        createdAt: MoreThanOrEqual(since),
+      },
       order: { createdAt: 'ASC' },
     });
     return Promise.all(
