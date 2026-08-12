@@ -111,17 +111,33 @@ describe('UploadAvatarUseCase', () => {
     expect(avatarStorage.save).not.toHaveBeenCalled();
   });
 
-  it('lanza InvalidAvatarException si el archivo excede 2MB', async () => {
+  it('lanza InvalidAvatarException si el archivo excede 7MB', async () => {
     await expect(
       useCase.execute({
         tenantId: 't1',
         userId: 'u1',
         mimetype: 'image/png',
-        size: 3 * 1024 * 1024,
+        size: 8 * 1024 * 1024,
         buffer: pngBuffer,
       }),
     ).rejects.toThrow(InvalidAvatarException);
     expect(avatarStorage.save).not.toHaveBeenCalled();
+  });
+
+  it('acepta un archivo de hasta 7MB', async () => {
+    userRepository.findByTenantAndId.mockResolvedValue(buildUser());
+    avatarStorage.save.mockResolvedValue('/uploads/avatars/t1/u1.png');
+
+    const result = await useCase.execute({
+      tenantId: 't1',
+      userId: 'u1',
+      mimetype: 'image/png',
+      size: 7 * 1024 * 1024,
+      buffer: pngBuffer,
+    });
+
+    expect(avatarStorage.save).toHaveBeenCalledTimes(1);
+    expect(result.user.avatarUrl).toBe('/uploads/avatars/t1/u1.png');
   });
 
   it('lanza InvalidAvatarException si el archivo esta vacio', async () => {

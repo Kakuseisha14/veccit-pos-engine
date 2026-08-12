@@ -73,8 +73,8 @@ export const UserFormModal: React.FC<UserFormModalProps> = ({
       setAvatarError("El avatar debe ser PNG, JPG o WEBP");
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      setAvatarError("El avatar no puede superar los 2MB");
+    if (file.size > 7 * 1024 * 1024) {
+      setAvatarError("El avatar no puede superar los 7MB");
       return;
     }
     setAvatarError(null);
@@ -179,7 +179,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = ({
                     : "Subir avatar"}
                 </Button>
                 <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-                  PNG, JPG o WEBP (maximo 2MB).
+                  PNG, JPG o WEBP (maximo 7MB).
                 </p>
               </div>
             </div>

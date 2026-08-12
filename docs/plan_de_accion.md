@@ -120,7 +120,7 @@ veccit-pos-engine/
   - [x] Campo `avatarUrl` en entidad de dominio `User`, entidad TypeORM y migración `1728000000000-add-users-avatar-url`.
   - [x] Métodos inmutables en `User`: `withName`, `withRole`, `withAvatar`, `activate`, `deactivate`.
   - [x] `IUserRepository.findByTenantAndId` (lookup siempre acotado por tenant).
-  - [x] Use Cases: `UpdateUserUseCase` (nombre/rol, valida que no se asigne `SUPER_ADMIN`), `SetUserActiveUseCase` (protege desactivar la propia sesión), `UploadAvatarUseCase` (validación PNG/JPG/WEBP ≤ 2MB) y `GetAvatarUseCase` (servido por tenant).
+  - [x] Use Cases: `UpdateUserUseCase` (nombre/rol, valida que no se asigne `SUPER_ADMIN`), `SetUserActiveUseCase` (protege desactivar la propia sesión), `UploadAvatarUseCase` (validación PNG/JPG/WEBP ≤ 7MB) y `GetAvatarUseCase` (servido por tenant).
   - [x] Infraestructura `DiskAvatarStorageService` (carpeta `uploads/avatars/<tenant>/`) con resolución de rutas a prueba de path traversal.
   - [x] Endpoints: `PATCH /users/:id`, `PATCH /users/:id/active`, `PATCH /users/:id/avatar` (multipart), `GET /uploads/avatars/:userId`. `/auth/login` y `/auth/me` devuelven `avatarUrl`.
 - **Frontend (Next.js + TailAdmin)**:

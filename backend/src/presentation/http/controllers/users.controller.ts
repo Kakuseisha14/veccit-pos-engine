@@ -43,7 +43,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { TenantGuard } from '../guards/tenant.guard';
 import { Roles } from '../guards/roles.decorator';
 
-const AVATAR_MAX_SIZE = 2 * 1024 * 1024;
+const AVATAR_MAX_SIZE = 8 * 1024 * 1024;
 
 @ApiTags('Users')
 @ApiCookieAuth()
@@ -125,7 +125,7 @@ export class UsersController {
         file: {
           type: 'string',
           format: 'binary',
-          description: 'Imagen PNG, JPG o WEBP (max 2MB)',
+          description: 'Imagen PNG, JPG o WEBP (max 7MB)',
         },
       },
     },

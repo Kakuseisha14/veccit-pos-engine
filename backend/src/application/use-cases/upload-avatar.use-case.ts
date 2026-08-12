@@ -16,7 +16,7 @@ const ALLOWED_MIMETYPES: Record<string, string> = {
   'image/webp': 'webp',
 };
 
-const MAX_SIZE_BYTES = 2 * 1024 * 1024;
+const MAX_SIZE_BYTES = 7 * 1024 * 1024;
 
 export class UploadAvatarUseCase {
   constructor(
@@ -37,7 +37,7 @@ export class UploadAvatarUseCase {
       throw new InvalidAvatarException('el archivo esta vacio');
     }
     if (input.size > MAX_SIZE_BYTES) {
-      throw new InvalidAvatarException('el archivo supera el limite de 2MB');
+      throw new InvalidAvatarException('el archivo supera el limite de 7MB');
     }
 
     const user = await this.userRepository.findByTenantAndId(

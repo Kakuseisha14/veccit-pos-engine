@@ -117,7 +117,7 @@ npm run dev
 - **Acceso:** En el menú lateral → **Usuarios** (`/users`). Exclusivo del `TENANT_ADMIN` (el ítem no aparece para `CASHIER`; el backend además lo protege con `RolesGuard`).
 - **Listado de usuarios:** Tabla con avatar, nombre, email, rol (Administrador/Cajero) y estado (Activo/Inactivo). El usuario de tu sesión se marca con la etiqueta **"Tu"**.
 - **Crear usuario:** Botón **"Nuevo usuario"** → modal con nombre, email, contraseña (mínimo 8 caracteres) y rol. Solo se permiten `CASHIER` y `TENANT_ADMIN`; `SUPER_ADMIN` se rechaza.
-- **Editar usuario:** Botón **"Editar"** → modal para cambiar el **nombre** y/o el **rol**. El modal también permite **subir/cambiar el avatar** (PNG, JPG o WEBP, máximo 2MB) sin salir de la edición.
+- **Editar usuario:** Botón **"Editar"** → modal para cambiar el **nombre** y/o el **rol**. El modal también permite **subir/cambiar el avatar** (PNG, JPG o WEBP, máximo 7MB) sin salir de la edición.
 - **Activar/Desactivar:** Botón por fila que cambia el estado del usuario. Un usuario desactivado **no puede iniciar sesión** (el backend devuelve 401). **No puedes desactivar tu propio usuario** (el backend responde 400 y la UI deshabilita el botón).
 - **Avatares seguros:** Los avatares se guardan en disco (`backend/uploads/avatars/<tenant>/<user>.<ext>`) y se sirven vía `GET /api/uploads/avatars/:userId`, **autenticado y aislado por tenant**: un usuario de otro comercio recibe 404. El header del sistema muestra tu avatar real (con las iniciales como respaldo).
 - **API nueva (Swagger `/api/docs`):**
