@@ -92,11 +92,11 @@ veccit-pos-engine/
 > **Objetivo**: Control de turnos de cajero, arqueo de caja inicial/final, e historial de recibos con anulación.
 
 - **Backend (NestJS)**:
-  - Entidad `CashRegister` (Shift).
-  - Use Cases: `OpenCashRegisterUseCase`, `CloseCashRegisterUseCase`, `GetShiftSummaryUseCase`, `VoidSaleUseCase` (exclusivo Admin).
+  - [x] Entidad `CashRegister` (Shift).
+  - [x] Use Cases: `OpenCashRegisterUseCase`, `CloseCashRegisterUseCase`, `GetShiftSummaryUseCase`, `VoidSaleUseCase` (exclusivo Admin).
 - **Frontend (Next.js + TailAdmin)**:
-  - Pantalla de Arqueo y Cuadre de Caja.
-  - Tabla de Historial de Ventas del día con botones de reimpresión de recibo y anulación (Admin).
+  - [x] Pantalla de Arqueo y Cuadre de Caja.
+  - [x] Tabla de Historial de Ventas del día con botones de reimpresión de recibo y anulación (Admin).
 
 ---
 

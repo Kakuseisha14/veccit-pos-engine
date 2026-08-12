@@ -24,7 +24,7 @@ docker compose up -d db
 cd backend
 npm install
 cp .env.example .env      # ya configura PORT=3001
-npm run migration:run     # aplica migraciones (tenants, users, tasas, inventario, ventas)
+npm run migration:run     # aplica migraciones (tenants, users, tasas, inventario, ventas, caja)
 npm run start:dev         # en desarrollo ejecuta las migraciones pendientes automáticamente al arrancar
 ```
 - API base: `http://localhost:3001/api`
@@ -96,6 +96,15 @@ npm run dev
 - **Proceso de venta (ACID):** Al confirmar el cobro, el sistema valida que los productos estén activos, descuenta stock y registra la venta con sus pagos en una **única transacción** de base de datos. Se genera un **número de venta** correlativo y la venta queda como `COMPLETED`.
 - **Historial de ventas:** En **Ventas** (`/sales`) se listan las ventas del comercio con fecha, número, cliente, total en USD/VES y método de pago. Cada venta muestra su **recibo** con el detalle de items, cantidades y pagos.
 
+### Módulo de Arqueo y Cierre de Caja (Fase 5)
+- **Acceso:** En el menú lateral → **Caja** (`/register`). Tanto `TENANT_ADMIN` como `CASHIER` pueden abrir/cerrar su propio turno.
+- **Apertura de caja:** Con el botón **"Abrir caja"** se inicia un turno indicando el monto inicial en efectivo (USD). Un cajero solo puede tener **un turno abierto a la vez**; si intenta abrir otro se rechaza con error 409.
+- **Vinculación de ventas:** Mientras hay un turno abierto, las ventas realizadas en el POS se **vinculan automáticamente** a ese turno (columna `shiftId`).
+- **Resumen del turno:** Cada turno muestra su **Resumen**: cantidad de ventas, total vendido (USD), efectivo esperado (suma de pagos en efectivo USD/VES de ventas no anuladas), desglose de pagos por método y la lista de ventas del turno.
+- **Cierre con arqueo:** Con el botón **"Cerrar caja"** el cajero registra el **efectivo contado** al cierre y opcionalmente observaciones. El sistema calcula la **diferencia** contra el efectivo esperado (positiva/sobrante o negativa/faltante). Un turno cerrado no se puede volver a cerrar.
+- **Historial de turnos:** Tabla con todos los turnos del comercio: fecha de apertura/cierre, montos y estado (Abierta/Cerrada), con botón **Resumen** por fila.
+- **Anulación de ventas (solo ADMIN):** En **Ventas** (`/sales`), el `TENANT_ADMIN` ve el botón **"Anular"** en las ventas completadas. Al anular se registra el motivo, la venta pasa a estado `Anulada` y el **stock de los productos se repone automáticamente** en una transacción ACID. Las ventas anuladas se excluyen del efectivo esperado del turno.
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
@@ -116,7 +125,7 @@ npm run dev
 | 2 | Multimoneda y Tasa de Cambio | ✅ Completada |
 | 3 | Inventario | ✅ Completada |
 | 4 | Ventas y POS | ✅ Completada |
-| 5 | Cierre de Caja | ⬜ Pendiente |
+| 5 | Cierre de Caja | ✅ Completada |
 | 6 | Dashboard y Métricas | ⬜ Pendiente |
 
 ## 📢 Nota para el Equipo
