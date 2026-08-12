@@ -113,6 +113,20 @@ npm run dev
 - **Definición de ganancia bruta:** Se calcula con el campo `costUSD` del producto (no se expone al cajero); si un producto ya no existe en el catálogo se asume costo 0. Las ventas **anuladas** se excluyen de todas las métricas.
 - **Backend:** Endpoint `GET /api/metrics/dashboard` (Swagger: `/api/docs`), documento en `manual_de_usuario.md`.
 
+### Módulo de Usuarios y Avatares (Fase 7)
+- **Acceso:** En el menú lateral → **Usuarios** (`/users`). Exclusivo del `TENANT_ADMIN` (el ítem no aparece para `CASHIER`; el backend además lo protege con `RolesGuard`).
+- **Listado de usuarios:** Tabla con avatar, nombre, email, rol (Administrador/Cajero) y estado (Activo/Inactivo). El usuario de tu sesión se marca con la etiqueta **"Tu"**.
+- **Crear usuario:** Botón **"Nuevo usuario"** → modal con nombre, email, contraseña (mínimo 8 caracteres) y rol. Solo se permiten `CASHIER` y `TENANT_ADMIN`; `SUPER_ADMIN` se rechaza.
+- **Editar usuario:** Botón **"Editar"** → modal para cambiar el **nombre** y/o el **rol**. El modal también permite **subir/cambiar el avatar** (PNG, JPG o WEBP, máximo 2MB) sin salir de la edición.
+- **Activar/Desactivar:** Botón por fila que cambia el estado del usuario. Un usuario desactivado **no puede iniciar sesión** (el backend devuelve 401). **No puedes desactivar tu propio usuario** (el backend responde 400 y la UI deshabilita el botón).
+- **Avatares seguros:** Los avatares se guardan en disco (`backend/uploads/avatars/<tenant>/<user>.<ext>`) y se sirven vía `GET /api/uploads/avatars/:userId`, **autenticado y aislado por tenant**: un usuario de otro comercio recibe 404. El header del sistema muestra tu avatar real (con las iniciales como respaldo).
+- **API nueva (Swagger `/api/docs`):**
+  - `PATCH /api/users/:id` — actualizar nombre y/o rol.
+  - `PATCH /api/users/:id/active` — activar/desactivar (`{ isActive: boolean }`), con protección anti-auto-desactivación.
+  - `PATCH /api/users/:id/avatar` — subir avatar (multipart `file`).
+  - `GET /api/uploads/avatars/:userId` — servir avatar (sesión + tenant).
+  - `POST /api/users` y `GET /api/users` ahora incluyen `avatarUrl`; lo mismo aplica a `/auth/login` y `/auth/me`.
+
 ### Roles y permisos
 | Rol | Permisos |
 | --- | --- |
@@ -135,6 +149,7 @@ npm run dev
 | 4 | Ventas y POS | ✅ Completada |
 | 5 | Cierre de Caja | ✅ Completada |
 | 6 | Dashboard y Métricas | ✅ Completada |
+| 7 | Usuarios y Avatares | ✅ Completada |
 
 ## 📢 Nota para el Equipo
 Este manual debe actualizarse **después de cada ejecución exitosa** junto con la documentación Swagger de la API (ver regla innegociable en `arquitectura_maestra.md`).
