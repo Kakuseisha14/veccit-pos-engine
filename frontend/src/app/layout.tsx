@@ -7,9 +7,16 @@ import { AuthProvider } from "@/context/AuthContext";
 import { RateProvider } from "@/context/RateContext";
 import { ToastProvider } from "@/context/ToastContext";
 
+import { Metadata } from "next";
+
 const outfit = Outfit({
   subsets: ["latin"],
 });
+
+export const metadata: Metadata = {
+  title: "Veccit ERP",
+  description: "Sistema de gestión y punto de venta Veccit ERP",
+};
 
 export default function RootLayout({
   children,
