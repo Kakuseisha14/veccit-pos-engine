@@ -70,6 +70,7 @@ npm run dev
 - **Alertas Integradas:** Formularios de acceso, registro y edición utilizan el componente nativo `<Alert>` de TailAdmin (`success`, `error`, `warning`, `info`).
 - **Sistema Global de Toasts:** Notificaciones flotantes tipo toast en la esquina superior derecha para feedback inmediato en acciones del usuario.
 - Los errores de carga de inventario y de autenticación (credenciales inválidas) se muestran como **toasts** flotantes, sin cajas rojas estáticas en las vistas.
+- **Campana de notificaciones (Header):** El icono de campanita abre el dropdown **"Notificaciones"** que muestra **alertas reales de stock mínimo**: los productos cuyo stock cayó por debajo del mínimo configurado, vía `GET /api/products/low-stock`. El badge naranja con punto parpadeante aparece solo cuando hay productos bajo el mínimo. Cada alerta muestra el producto, las unidades restantes y el mínimo; al hacer clic va a **Inventario** (`/products`). Los demos de TailAdmin fueron eliminados.
 
 ### Módulo de Inventario (Fase 3)
 - **Acceso:** En el menú lateral → **Inventario** (`/products`). El `TENANT_ADMIN` tiene control total; el `CASHIER` solo visualiza la lista de productos (sin costos).
@@ -119,12 +120,12 @@ npm run dev
 - **Crear usuario:** Botón **"Nuevo usuario"** → modal con nombre, email, contraseña (mínimo 8 caracteres) y rol. Solo se permiten `CASHIER` y `TENANT_ADMIN`; `SUPER_ADMIN` se rechaza.
 - **Editar usuario:** Botón **"Editar"** → modal para cambiar el **nombre** y/o el **rol**. El modal también permite **subir/cambiar el avatar** (PNG, JPG o WEBP, máximo 7MB) sin salir de la edición.
 - **Activar/Desactivar:** Botón por fila que cambia el estado del usuario. Un usuario desactivado **no puede iniciar sesión** (el backend devuelve 401). **No puedes desactivar tu propio usuario** (el backend responde 400 y la UI deshabilita el botón).
-- **Avatares seguros:** Los avatares se guardan en disco (`backend/uploads/avatars/<tenant>/<user>.<ext>`) y se sirven vía `GET /api/uploads/avatars/:userId`, **autenticado y aislado por tenant**: un usuario de otro comercio recibe 404. El header del sistema muestra tu avatar real (con las iniciales como respaldo).
+- **Avatares seguros:** Los avatares se guardan en disco (`backend/uploads/avatars/<tenant>/<user>.<ext>`) y se sirven vía `GET /api/uploads/avatars/:tenantId/:fileName`, **autenticado y aislado por tenant**: un usuario de otro comercio recibe 404. El header del sistema muestra tu avatar real (con las iniciales como respaldo).
 - **API nueva (Swagger `/api/docs`):**
   - `PATCH /api/users/:id` — actualizar nombre y/o rol.
   - `PATCH /api/users/:id/active` — activar/desactivar (`{ isActive: boolean }`), con protección anti-auto-desactivación.
   - `PATCH /api/users/:id/avatar` — subir avatar (multipart `file`).
-  - `GET /api/uploads/avatars/:userId` — servir avatar (sesión + tenant).
+  - `GET /api/uploads/avatars/:tenantId/:fileName` — servir avatar (sesión + tenant).
   - `POST /api/users` y `GET /api/users` ahora incluyen `avatarUrl`; lo mismo aplica a `/auth/login` y `/auth/me`.
 
 ### Roles y permisos

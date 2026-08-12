@@ -122,12 +122,13 @@ veccit-pos-engine/
   - [x] `IUserRepository.findByTenantAndId` (lookup siempre acotado por tenant).
   - [x] Use Cases: `UpdateUserUseCase` (nombre/rol, valida que no se asigne `SUPER_ADMIN`), `SetUserActiveUseCase` (protege desactivar la propia sesión), `UploadAvatarUseCase` (validación PNG/JPG/WEBP ≤ 7MB) y `GetAvatarUseCase` (servido por tenant).
   - [x] Infraestructura `DiskAvatarStorageService` (carpeta `uploads/avatars/<tenant>/`) con resolución de rutas a prueba de path traversal.
-  - [x] Endpoints: `PATCH /users/:id`, `PATCH /users/:id/active`, `PATCH /users/:id/avatar` (multipart), `GET /uploads/avatars/:userId`. `/auth/login` y `/auth/me` devuelven `avatarUrl`.
+  - [x] Endpoints: `PATCH /users/:id`, `PATCH /users/:id/active`, `PATCH /users/:id/avatar` (multipart), `GET /uploads/avatars/:tenantId/:fileName` (el `avatarUrl` se sirve aislado por tenant, extrae el `userId` del nombre de archivo). `/auth/login` y `/auth/me` devuelven `avatarUrl`.
 - **Frontend (Next.js + TailAdmin)**:
   - [x] Página **Usuarios** (`/users`): tabla con avatar, rol y estado; modales de crear/editar; toggle activar/desactivar (botón bloqueado para el propio usuario).
   - [x] Subida de avatar desde el modal de edición con vista previa.
-  - [x] `UserAvatar` (fetch autenticado del blob + fallback de iniciales) en el dropdown del header.
-  - [x] Ítem **Usuarios** en el menú lateral visible solo para `TENANT_ADMIN`.
+- [x] `UserAvatar` (fetch autenticado del blob + fallback de iniciales) en el dropdown del header, tabla de usuarios y modal de edición.
+- [x] Ítem **Usuarios** en el menú lateral visible solo para `TENANT_ADMIN`.
+- [x] **Campana de notificaciones reales**: el dropdown del header muestra alertas de stock mínimo (`GET /products/low-stock`) en lugar de los demos de TailAdmin; el badge naranja aparece solo si hay productos bajo el mínimo.
 
 ---
 
