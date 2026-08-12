@@ -26,13 +26,22 @@ export class UploadsController {
   @ApiOperation({
     summary: 'Obtener el avatar de un usuario del tenant (aislado por tenant)',
   })
-  @Get(':userId')
-  async getAvatar(@Param('userId') userId: string, @Res() res: Response) {
+  @Get(':tenantId/:fileName')
+  async getAvatar(
+    @Param('tenantId') tenantIdFromUrl: string,
+    @Param('fileName') fileName: string,
+    @Res() res: Response,
+  ) {
     const tenantId = TenantContext.getTenantId();
-    if (!tenantId) {
+    if (!tenantId || tenantIdFromUrl !== tenantId) {
       throw new ForbiddenException(
         'Se requiere un contexto de inquilino (tenant) activo',
       );
+    }
+
+    const userId = fileName.replace(/\.[^.]+$/, '');
+    if (!userId) {
+      throw new NotFoundException('Datos de avatar invalidos');
     }
 
     let output;
