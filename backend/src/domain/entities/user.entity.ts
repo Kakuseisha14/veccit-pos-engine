@@ -18,6 +18,7 @@ export class User {
     public readonly passwordHash: string,
     public readonly role: Role,
     public readonly isActive: boolean,
+    public readonly avatarUrl: string | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -32,8 +33,63 @@ export class User {
       input.passwordHash,
       input.role,
       true,
+      null,
       now,
       now,
+    );
+  }
+
+  withName(name: string): User {
+    return this.copyWith({ name: name.trim() });
+  }
+
+  withRole(role: Role): User {
+    return new User(
+      this.id,
+      this.tenantId,
+      this.name,
+      this.email,
+      this.passwordHash,
+      role,
+      this.isActive,
+      this.avatarUrl,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
+  withAvatar(avatarUrl: string | null): User {
+    return this.copyWith({ avatarUrl });
+  }
+
+  activate(): User {
+    return this.copyWith({ isActive: true });
+  }
+
+  deactivate(): User {
+    return this.copyWith({ isActive: false });
+  }
+
+  private copyWith({
+    name,
+    isActive,
+    avatarUrl,
+  }: {
+    name?: string;
+    isActive?: boolean;
+    avatarUrl?: string | null;
+  }): User {
+    return new User(
+      this.id,
+      this.tenantId,
+      name ?? this.name,
+      this.email,
+      this.passwordHash,
+      this.role,
+      isActive ?? this.isActive,
+      avatarUrl === undefined ? this.avatarUrl : avatarUrl,
+      this.createdAt,
+      new Date(),
     );
   }
 }

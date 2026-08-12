@@ -9,6 +9,7 @@ describe('CreateUserUseCase', () => {
   const userRepository: jest.Mocked<IUserRepository> = {
     findById: jest.fn(),
     findByEmail: jest.fn(),
+    findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
     save: jest.fn(),

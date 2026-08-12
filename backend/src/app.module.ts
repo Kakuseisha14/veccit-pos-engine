@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { PersistenceModule } from './infrastructure/persistence/persistence.module';
 import { typeOrmModuleOptions } from './infrastructure/persistence/typeorm.config';
 import { SecurityModule } from './infrastructure/security/security.module';
+import { StorageModule } from './infrastructure/storage/storage.module';
 import { TenantContextInterceptor } from './presentation/http/interceptors/tenant-context.interceptor';
 import { HealthModule } from './presentation/http/controllers/health.module';
 import { AuthModule } from './presentation/http/modules/auth.module';
@@ -15,6 +16,7 @@ import { InventoryModule } from './presentation/http/modules/inventory.module';
 import { SalesModule } from './presentation/http/modules/sales.module';
 import { CashRegisterModule } from './presentation/http/modules/cash-register.module';
 import { MetricsModule } from './presentation/http/modules/metrics.module';
+import { UploadsModule } from './presentation/http/modules/uploads.module';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { MetricsModule } from './presentation/http/modules/metrics.module';
     }),
     PersistenceModule,
     SecurityModule,
+    StorageModule,
     AuthModule,
     UsersModule,
     RatesModule,
@@ -35,6 +38,7 @@ import { MetricsModule } from './presentation/http/modules/metrics.module';
     SalesModule,
     CashRegisterModule,
     MetricsModule,
+    UploadsModule,
     HealthModule,
   ],
   providers: [

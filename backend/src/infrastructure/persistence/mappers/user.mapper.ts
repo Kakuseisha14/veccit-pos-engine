@@ -11,6 +11,7 @@ export function toDomainUser(entity: UserEntity): User {
     entity.passwordHash,
     entity.role as Role,
     entity.isActive,
+    entity.avatarUrl,
     entity.createdAt,
     entity.updatedAt,
   );
@@ -25,6 +26,7 @@ export function toEntityUser(user: User): UserEntity {
   entity.passwordHash = user.passwordHash;
   entity.role = user.role;
   entity.isActive = user.isActive;
+  entity.avatarUrl = user.avatarUrl;
   entity.createdAt = user.createdAt;
   entity.updatedAt = user.updatedAt;
   return entity;

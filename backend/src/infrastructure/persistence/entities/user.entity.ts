@@ -31,6 +31,9 @@ export class UserEntity {
   @Column({ type: 'boolean', default: true })
   isActive!: boolean;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  avatarUrl!: string | null;
+
   @CreateDateColumn()
   createdAt!: Date;
 

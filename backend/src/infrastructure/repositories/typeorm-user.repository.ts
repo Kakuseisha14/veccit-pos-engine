@@ -25,6 +25,11 @@ export class TypeOrmUserRepository implements IUserRepository {
     return entity ? toDomainUser(entity) : null;
   }
 
+  async findByTenantAndId(tenantId: string, id: string): Promise<User | null> {
+    const entity = await this.repository.findOneBy({ tenantId, id });
+    return entity ? toDomainUser(entity) : null;
+  }
+
   async existsByEmail(email: string): Promise<boolean> {
     const count = await this.repository.countBy({
       email: email.toLowerCase().trim(),

@@ -61,6 +61,7 @@ export class LoginUseCase {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatarUrl: user.avatarUrl,
       },
       tenant,
     };

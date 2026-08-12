@@ -1,15 +1,45 @@
 import { LoginUseCase } from './login.use-case';
+import { User } from '../../domain/entities/user.entity';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
 import type { ITenantRepository } from '../../domain/repositories/tenant.repository';
 import type { IPasswordHasher } from '../services/password-hasher.service';
 import type { ITokenService } from '../services/token.service';
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception';
+import type { Role } from '../../domain/value-objects/role';
+
+function buildUser(overrides: Partial<User> = {}): User {
+  const base = new User(
+    'u1',
+    't1',
+    'Ana',
+    'ana@tienda.com',
+    'hashed',
+    'CASHIER' as Role,
+    true,
+    null,
+    new Date('2026-01-01T00:00:00Z'),
+    new Date('2026-01-01T00:00:00Z'),
+  );
+  return new User(
+    overrides.id ?? base.id,
+    overrides.tenantId === undefined ? base.tenantId : overrides.tenantId,
+    overrides.name ?? base.name,
+    overrides.email ?? base.email,
+    overrides.passwordHash ?? base.passwordHash,
+    overrides.role ?? base.role,
+    overrides.isActive ?? base.isActive,
+    overrides.avatarUrl === undefined ? base.avatarUrl : overrides.avatarUrl,
+    overrides.createdAt ?? base.createdAt,
+    overrides.updatedAt ?? base.updatedAt,
+  );
+}
 
 describe('LoginUseCase', () => {
   let useCase: LoginUseCase;
   const userRepository: jest.Mocked<IUserRepository> = {
     findById: jest.fn(),
     findByEmail: jest.fn(),
+    findByTenantAndId: jest.fn(),
     existsByEmail: jest.fn(),
     listByTenant: jest.fn(),
     save: jest.fn(),
@@ -28,18 +58,6 @@ describe('LoginUseCase', () => {
     verify: jest.fn(),
   };
 
-  const activeUser = {
-    id: 'u1',
-    tenantId: 't1',
-    name: 'Ana',
-    email: 'ana@tienda.com',
-    passwordHash: 'hashed',
-    role: 'CASHIER' as const,
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
     useCase = new LoginUseCase(
@@ -51,7 +69,7 @@ describe('LoginUseCase', () => {
   });
 
   it('devuelve el token y los datos de sesion si las credenciales son validas', async () => {
-    userRepository.findByEmail.mockResolvedValue(activeUser);
+    userRepository.findByEmail.mockResolvedValue(buildUser());
     passwordHasher.compare.mockResolvedValue(true);
     tenantRepository.findById.mockResolvedValue({
       id: 't1',
@@ -92,10 +110,9 @@ describe('LoginUseCase', () => {
   });
 
   it('lanza InvalidCredentialsException si el usuario esta inactivo', async () => {
-    userRepository.findByEmail.mockResolvedValue({
-      ...activeUser,
-      isActive: false,
-    });
+    userRepository.findByEmail.mockResolvedValue(
+      buildUser({ isActive: false }),
+    );
 
     await expect(
       useCase.execute({ email: 'ana@tienda.com', password: 'clave' }),
@@ -103,7 +120,7 @@ describe('LoginUseCase', () => {
   });
 
   it('lanza InvalidCredentialsException si la contrasena es incorrecta', async () => {
-    userRepository.findByEmail.mockResolvedValue(activeUser);
+    userRepository.findByEmail.mockResolvedValue(buildUser());
     passwordHasher.compare.mockResolvedValue(false);
 
     await expect(
@@ -112,11 +129,9 @@ describe('LoginUseCase', () => {
   });
 
   it('no consulta el tenant si el usuario es SUPER_ADMIN (tenantId null)', async () => {
-    userRepository.findByEmail.mockResolvedValue({
-      ...activeUser,
-      tenantId: null,
-      role: 'SUPER_ADMIN',
-    });
+    userRepository.findByEmail.mockResolvedValue(
+      buildUser({ tenantId: null, role: 'SUPER_ADMIN' }),
+    );
     passwordHasher.compare.mockResolvedValue(true);
     tokenService.sign.mockResolvedValue('jwt-token');
 

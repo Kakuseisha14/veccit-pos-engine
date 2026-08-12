@@ -67,6 +67,7 @@ export class RegisterTenantUseCase {
         name: adminUser.name,
         email: adminUser.email,
         role: adminUser.role,
+        avatarUrl: adminUser.avatarUrl,
       },
     };
   }

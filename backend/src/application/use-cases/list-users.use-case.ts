@@ -9,6 +9,7 @@ export interface ListUsersOutput {
     email: string;
     role: string;
     isActive: boolean;
+    avatarUrl: string | null;
   }[];
 }
 
@@ -28,6 +29,7 @@ export class ListUsersUseCase {
         email: user.email,
         role: user.role,
         isActive: user.isActive,
+        avatarUrl: user.avatarUrl,
       })),
     };
   }
