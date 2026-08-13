@@ -190,6 +190,19 @@ veccit-pos-engine/
 
 ---
 
+### 🧹 Fase 12: Limpieza UI/UX y Restos de TailAdmin
+> **Objetivo**: Eliminar restos del template TailAdmin (deps, assets, CSS y UI muertos) y dejar la interfaz 100% del proyecto Veccit.
+
+- [x] **Header**: barra de búsqueda muerta eliminada de `AppHeader.tsx` (form + `inputRef`/`useEffect` de ⌘K + div vacío).
+- [x] **404 en español**: `not-found.tsx` y `error-404/page.tsx` traducidos y sin marca TailAdmin. El footer ya decía "Veccit ERP".
+- [x] **READMEs**: `backend/README.md` y `frontend/README.md` reescritos con documentación específica del proyecto.
+- [x] **Deps demo desinstaladas** (28 paquetes): `@fullcalendar/*`, `swiper`, `react-dnd`, `react-dnd-html5-backend`, `react-dropzone`, `flatpickr`, `@react-jvectormap/*`, `@types/react-transition-group`. Eliminado el import CSS de `flatpickr` en `layout.tsx` y los bloques CSS demo (flatpickr/fullcalendar/swiper/jvectormap) de `globals.css`. Se conservan `apexcharts`/`react-apexcharts` (usados por `SalesChart`) y `@svgr/webpack` (requerido por `next.config` + imports SVG de `src/icons`).
+- [x] **Assets demo eliminados** de `public/images/`: quedan solo los 7 realmente usados (logos Veccit, 404, grid-01).
+- [x] **Paginación evaluada**: NO implementada en el MVP (listados completos por tenant, volumen <~500 registros); decisión documentada para revisión futura.
+- **Tests**: Frontend lint ✅, tsc ✅, **vitest 12/12** ✅, **build** ✅ (10 rutas). Backend intacto (no se tocó en esta fase).
+
+---
+
 ## 🔍 Proceso de Verificación y Cero Deuda Técnica
 Al finalizar cada hito:
 1. Verificación de compilación TypeScript (`tsc --noEmit`).

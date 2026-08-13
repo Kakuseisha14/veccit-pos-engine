@@ -74,11 +74,13 @@ la ejecución en `docs/manual_de_usuario.md` + Swagger (`/api/docs`).
 
 ## E. Limpieza UI/UX y Restos de TailAdmin
 
-- [ ] Eliminar o hacer funcional la **barra de búsqueda del header** (hoy muerta).
-- [ ] Páginas 404 en **español** y sin marca TailAdmin (`not-found.tsx`, `error-404/page.tsx`, footer "© TailAdmin").
-- [ ] Reemplazar READMEs de backend/frontend (hoy template por defecto).
-- [ ] Limpiar deps/assets/iconos demo sin uso (`@fullcalendar/*`, `swiper`, `react-dnd`, `react-dropzone`, imágenes `user-*.jpg`, etc.).
-- [ ] **Paginación** en listados (`users`, `products`, `sales`) — evaluar si es necesaria para el MVP.
+- [x] Eliminada la **barra de búsqueda del header** (muerta): formulario, `inputRef`/`useEffect` de ⌘K y div vacío en `AppHeader.tsx`.
+- [x] Páginas 404 en **español** y sin marca TailAdmin (`not-found.tsx`, `error-404/page.tsx`). El footer ya decía "Veccit ERP".
+- [x] READMEs de `backend/` y `frontend/` reemplazados (template por defecto → documentación específica del proyecto).
+- [x] Deps demo sin uso desinstaladas (28 paquetes): `@fullcalendar/*`, `swiper`, `react-dnd`, `react-dnd-html5-backend`, `react-dropzone`, `flatpickr`, `@react-jvectormap/*`, `@types/react-transition-group`. Eliminado el import CSS de `flatpickr` en `layout.tsx` y los bloques CSS demo (flatpickr/fullcalendar/swiper/jvectormap) de `globals.css` (se conservan los estilos `apexcharts`, usados por `SalesChart`). `@svgr/webpack` se conserva (requerido por `next.config` + imports SVG de `src/icons`).
+- [x] **Assets demo eliminados** de `public/images/` (brands, cards, carousels, chats, países, errores, grids, icons, products, tasks, videos y 37 avatares `user-*.jpg`): solo quedan los 7 realmente usados (logos Veccit, 404, grid-01).
+- [x] **Paginación evaluada**: NO implementada en el MVP. Los listados (`users`, `products`, `sales`) cargan registros completos del tenant; para comercios pequeños/medianos (<~500 registros) el volumen es manejable. **Decisión documentada**: revisar cuando un tenant supere ~500 registros.
+- [x] Backend verificación: intacto (no se tocó en esta fase). Frontend verificación: lint ✔, tsc ✔, **vitest 12/12** ✔, **build** ✔ (10 rutas).
 
 ---
 
