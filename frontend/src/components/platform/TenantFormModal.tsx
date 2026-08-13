@@ -54,7 +54,7 @@ export const TenantFormModal: React.FC<TenantFormModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-lg p-6">
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6">
       <div className="mb-5">
         <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90">
           Nuevo comercio
@@ -68,64 +68,66 @@ export const TenantFormModal: React.FC<TenantFormModalProps> = ({
       {error && <Alert variant="error" title="Error" message={error} />}
 
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-        <div>
-          <Label>Nombre del comercio</Label>
-          <Input
-            value={tenantName}
-            onChange={(e) => setTenantName(e.target.value)}
-            placeholder="Mi Tienda C.A."
-            required
-          />
-        </div>
+        <div className="grid grid-cols-1 gap-5.5 sm:grid-cols-2">
+          <div>
+            <Label>Nombre del comercio</Label>
+            <Input
+              value={tenantName}
+              onChange={(e) => setTenantName(e.target.value)}
+              placeholder="Mi Tienda C.A."
+              required
+            />
+          </div>
 
-        <div>
-          <Label>Razon social (opcional)</Label>
-          <Input
-            value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
-            placeholder="Mi Tienda C.A."
-          />
-        </div>
+          <div>
+            <Label>Razon social (opcional)</Label>
+            <Input
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Mi Tienda C.A."
+            />
+          </div>
 
-        <div>
-          <Label>Administrador</Label>
-          <Input
-            value={tenantAdminName}
-            onChange={(e) => setTenantAdminName(e.target.value)}
-            placeholder="Nombre y apellido"
-            required
-          />
-        </div>
+          <div>
+            <Label>Administrador</Label>
+            <Input
+              value={tenantAdminName}
+              onChange={(e) => setTenantAdminName(e.target.value)}
+              placeholder="Nombre y apellido"
+              required
+            />
+          </div>
 
-        <div>
-          <Label>Email</Label>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@mi-tienda.com"
-            required
-          />
-        </div>
+          <div>
+            <Label>Email</Label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@mi-tienda.com"
+              required
+            />
+          </div>
 
-        <div>
-          <Label>Telefono (opcional)</Label>
-          <Input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+584121234567"
-          />
-        </div>
+          <div>
+            <Label>Telefono (opcional)</Label>
+            <Input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+584121234567"
+            />
+          </div>
 
-        <div>
-          <Label>Contrasena</Label>
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Minimo 8 caracteres"
-            required
-          />
+          <div>
+            <Label>Contrasena</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimo 8 caracteres"
+              required
+            />
+          </div>
         </div>
 
         <div>
@@ -143,7 +145,7 @@ export const TenantFormModal: React.FC<TenantFormModalProps> = ({
           </select>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-1">
+        <div className="flex items-center justify-end gap-4 pt-1">
           <Button variant="outline" onClick={onClose} type="button">
             Cancelar
           </Button>
