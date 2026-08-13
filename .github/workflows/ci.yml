@@ -19,8 +19,6 @@ jobs:
           POSTGRES_DB: veccit_pos
         ports:
           - 5433:5432
-        volumes:
-          - ${{ github.workspace }}/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
         options: >-
           --health-cmd "pg_isready -U postgres -d veccit_pos"
           --health-interval 10s
@@ -43,6 +41,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Los service containers se inician antes del checkout, por lo que no es
+      # posible montar init.sql del repo. Se crea la base e2e manualmente.
+      - name: Create e2e test database
+        run: docker exec "${{ job.services.postgres.id }}" createdb -U postgres veccit_pos_test
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
