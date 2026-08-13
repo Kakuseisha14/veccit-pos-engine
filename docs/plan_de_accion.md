@@ -166,6 +166,17 @@ veccit-pos-engine/
 
 ---
 
+### 🧪 Fase 10: Calidad y Cobertura de Pruebas (Cero Deuda Técnica)
+> **Objetivo**: Bloquear los comportamientos ACID contra PostgreSQL real, cubrir los cálculos monetarios del carrito/pagos y validar el login en el cliente.
+
+- [x] **Bug corregido**: `manager.query` de TypeORM v1.1 devuelve `[rows, rowCount]`; `decreaseStock`/`increaseStock` validaban `result.length` (siempre `2`), por lo que nunca se lanzaba `InsufficientStockException`/`ProductNotFoundException`. Descubierto por el e2e de rollback ACID. Fix + spec unitario (5 tests).
+- [x] **E2E reales** (`backend/test/quality.e2e-spec.ts` contra `veccit_pos_test`): checkout mixto USD/VES con rollback ACID forzado (descuento parcial revertido), void con reposición de stock y avatar 404 cross-tenant.
+- [x] **Frontend**: `lib/payment.ts` (cálculos puros de carrito y pagos mixtos en céntimos, conversión VES→USD, tolerancia ±0.02) usado por `PosView` y `PaymentModal`; **12 tests vitest**; validación client-side en `SignInForm` (requerido, email, ≥8).
+- [x] Tests unitarios que confirman que `TENANT_ADMIN` no puede crear `SUPER_ADMIN` (ya cubierto).
+- **Tests**: Backend typecheck ✅, lint ✅, **151 tests unitarios** ✅ + **5 e2e** ✅. Frontend lint ✅, tsc ✅, vitest **12/12** ✅, build ✅ (12 rutas).
+
+---
+
 ## 🔍 Proceso de Verificación y Cero Deuda Técnica
 Al finalizar cada hito:
 1. Verificación de compilación TypeScript (`tsc --noEmit`).

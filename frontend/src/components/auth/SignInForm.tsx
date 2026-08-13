@@ -3,6 +3,7 @@
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
+import Alert from "@/components/ui/alert/Alert";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
@@ -17,9 +18,33 @@ export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [fieldError, setFieldError] = useState<string | null>(null);
+
+  const validate = (): string | null => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      return "El correo electronico es requerido";
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      return "Ingresa un correo electronico valido";
+    }
+    if (!password) {
+      return "La contrasena es requerida";
+    }
+    if (password.length < 8) {
+      return "La contrasena debe tener al menos 8 caracteres";
+    }
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const validationError = validate();
+    if (validationError) {
+      setFieldError(validationError);
+      return;
+    }
+    setFieldError(null);
     setSubmitting(true);
     try {
       await login(email, password);
@@ -77,6 +102,9 @@ export default function SignInForm() {
           </div>
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {fieldError && (
+                <Alert variant="error" title="Datos invalidos" message={fieldError} />
+              )}
               <div>
                 <Label>
                   Correo <span className="text-error-500">*</span>
@@ -87,6 +115,7 @@ export default function SignInForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={submitting}
+                  required
                 />
               </div>
               <div>
@@ -100,6 +129,7 @@ export default function SignInForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={submitting}
+                    required
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}

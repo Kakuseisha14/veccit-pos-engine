@@ -20,13 +20,15 @@ import {
   type CustomerDraft,
 } from "./CustomerModal";
 import { PaymentModal, type PaymentDraft } from "./PaymentModal";
+import {
+  canConfirmPayment,
+  computeTotalCents,
+} from "@/lib/payment";
 
 interface CartItem {
   product: Product;
   quantity: number;
 }
-
-const toCents = (value: number): number => Math.round(value * 100);
 
 export const PosView: React.FC = () => {
   const { user } = useAuth();
@@ -101,9 +103,11 @@ export const PosView: React.FC = () => {
         product.name.toLowerCase().includes(trimmedSearch)),
   );
 
-  const subtotalCents = cart.reduce(
-    (sum, item) => sum + toCents(item.product.priceUSD) * item.quantity,
-    0,
+  const subtotalCents = computeTotalCents(
+    cart.map((item) => ({
+      unitPriceUSD: item.product.priceUSD,
+      quantity: item.quantity,
+    })),
   );
   const subtotalUSD = subtotalCents / 100;
 
@@ -202,15 +206,7 @@ export const PosView: React.FC = () => {
   };
 
   const canConfirmSale = (): boolean => {
-    const totalCents = toCents(subtotalUSD);
-    const paidCents = paymentDrafts.reduce((sum, payment) => {
-      const amount = Number.parseFloat(payment.amount);
-      if (!Number.isFinite(amount) || amount < 0) return sum;
-      if (payment.currency === "USD") return sum + toCents(amount);
-      if (!rateVES || rateVES <= 0) return sum;
-      return sum + toCents(amount / rateVES);
-    }, 0);
-    return Math.abs(totalCents - paidCents) <= 2;
+    return canConfirmPayment(subtotalUSD, paymentDrafts, rateVES);
   };
 
   if (loading) {

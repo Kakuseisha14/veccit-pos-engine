@@ -146,8 +146,10 @@ npm run dev
 ---
 
 ## 🧪 Verificación y Calidad (para desarrollo)
-- **Backend**: `cd backend` → `npm run lint`, `npx tsc --noEmit`, `npm test`
-- **Frontend**: `cd frontend` → `npm run lint`, `npm run build`
+- **Backend**: `cd backend` → `npm run lint`, `npx tsc --noEmit`, `npm test`, `npm run test:e2e`
+- **Tests e2e reales**: requieren el contenedor `veccit_pos_db` activo. Usan la base `veccit_pos_test` (se crea con `docker exec veccit_pos_db createdb -U postgres veccit_pos_test` y migraciones con `DB_DATABASE=veccit_pos_test npm run migration:run`). Suite: `backend/test/quality.e2e-spec.ts` (checkout mixto ACID + rollback, void con reposición y avatar cross-tenant).
+- **Frontend**: `cd frontend` → `npm run lint`, `npx tsc --noEmit`, `npm test` (vitest), `npm run build`
+- **Tests de cálculo (vitest)**: `frontend/src/lib/payment.test.ts` cubre subtotales en céntimos (sin errores de punto flotante), conversión VES→USD con la tasa del día, tolerancia de ±2 centavos y bloqueo de pagos VES sin tasa.
 
 ## 🔄 Estado por Fase
 | Fase | Módulo | Estado |
@@ -160,6 +162,9 @@ npm run dev
 | 5 | Cierre de Caja | ✅ Completada |
 | 6 | Dashboard y Métricas | ✅ Completada |
 | 7 | Usuarios y Avatares | ✅ Completada |
+| 8 | Modelo de Roles SaaS y Plataforma (SUPER_ADMIN) | ✅ Completada |
+| 9 | Sesión, Cuenta y Acceso por Rol | ✅ Completada |
+| 10 | Calidad y Cobertura de Pruebas | ✅ Completada |
 
 ## 📢 Nota para el Equipo
 Este manual debe actualizarse **después de cada ejecución exitosa** junto con la documentación Swagger de la API (ver regla innegociable en `arquitectura_maestra.md`).

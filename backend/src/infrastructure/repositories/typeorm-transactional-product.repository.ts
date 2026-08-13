@@ -71,7 +71,8 @@ export class TypeOrmTransactionalProductRepository implements IProductRepository
        RETURNING "id"`,
       [quantity, productId, tenantId],
     );
-    if (result.length === 0) {
+    const rows = Array.isArray(result[0]) ? result[0] : result;
+    if (rows.length === 0) {
       const existing = await this.manager.findOneBy(ProductEntity, {
         tenantId,
         id: productId,
@@ -95,7 +96,8 @@ export class TypeOrmTransactionalProductRepository implements IProductRepository
        RETURNING "id"`,
       [quantity, productId, tenantId],
     );
-    if (result.length === 0) {
+    const rows = Array.isArray(result[0]) ? result[0] : result;
+    if (rows.length === 0) {
       throw new ProductNotFoundException(productId);
     }
   }

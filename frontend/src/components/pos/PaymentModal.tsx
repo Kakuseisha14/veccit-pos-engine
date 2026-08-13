@@ -7,10 +7,16 @@ import Alert from "@/components/ui/alert/Alert";
 import Label from "@/components/form/Label";
 import { formatUSD, formatVES } from "@/lib/inventory";
 import {
+  canConfirmPayment,
+  computePaidCents,
+  computeRemainingCents,
+  hasUnpricedVesPayment,
+  type PaymentCurrency,
+} from "@/lib/payment";
+import {
   PAYMENT_METHOD_LABELS,
   PAYMENT_METHODS,
   type Customer,
-  type PaymentCurrency,
   type PaymentMethod,
 } from "@/lib/sales";
 
@@ -38,8 +44,6 @@ interface PaymentModalProps {
   onSubmit: () => void;
 }
 
-const toCents = (value: number): number => Math.round(value * 100);
-
 const selectClasses =
   "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-800 outline-none transition focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90";
 
@@ -60,20 +64,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onChangePayments,
   onSubmit,
 }) => {
-  const totalCents = toCents(totalUSD);
-  const paidCents = payments.reduce((sum, payment) => {
-    const amount = Number.parseFloat(payment.amount);
-    if (!Number.isFinite(amount) || amount < 0) return sum;
-    if (payment.currency === "USD") return sum + toCents(amount);
-    if (!rateVES || rateVES <= 0) return sum;
-    return sum + toCents(amount / rateVES);
-  }, 0);
+  const paidCents = computePaidCents(payments, rateVES);
 
-  const remainingCents = totalCents - paidCents;
+  const remainingCents = computeRemainingCents(totalUSD, payments, rateVES);
   const paidUSD = paidCents / 100;
   const remainingUSD = remainingCents / 100;
-  const canSubmit = Math.abs(remainingCents) <= 2;
-  const hasVesPayment = payments.some((p) => p.currency === "VES");
+  const canSubmit = canConfirmPayment(totalUSD, payments, rateVES);
+  const hasVesPayment = hasUnpricedVesPayment(payments);
   const vesBlocked = hasVesPayment && (!rateVES || rateVES <= 0);
 
   const addPayment = () => {

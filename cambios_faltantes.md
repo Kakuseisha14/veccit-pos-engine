@@ -58,12 +58,15 @@ la ejecución en `docs/manual_de_usuario.md` + Swagger (`/api/docs`).
 - [ ] `Dockerfile` de la API + servicio API en `docker-compose.yml` (hoy solo levanta la BD).
 - [ ] `.env.production` y script/documento de despliegue (`migration:run` en producción).
 
-## D. Calidad y Cobertura de Pruebas (Cero Deuda Técnica)
+## D. Calidad y Cobertura de Pruebas (Cero Deuda Técnica) ✅
 
-- [ ] Backend e2e contra **PostgreSQL real**: checkout mixto USD/VES con **rollback ACID** forzado, void con reposición de stock, avatar **404 cross-tenant**.
-- [ ] Backend: test unitario que verifique que `TENANT_ADMIN` no puede crear `SUPER_ADMIN`.
-- [ ] Tests frontend (vitest/jest): cálculos del carrito y pagos mixtos.
-- [ ] Validación client-side en **login/registro** (`required`, email, contraseña ≥ 8).
+- [x] Backend e2e contra **PostgreSQL real** (`veccit_pos_test` en el contenedor): checkout mixto USD/VES con **rollback ACID forzado** (item con stock insuficiente revierte el descuento del item previo y no persiste la venta), void con reposición de stock, avatar **404 cross-tenant**. Suite `backend/test/quality.e2e-spec.ts`.
+- [x] **Bug corregido en Fase D**: `manager.query` de TypeORM v1.1 devuelve `[rows, rowCount]`, por lo que `decreaseStock`/`increaseStock` nunca detectaban stock insuficiente ni producto inexistente (validaban `result.length !== 0`, siempre `2`). El rollback ACID del e2e lo destapó. Fix en `typeorm-transactional-product.repository.ts` + spec unitario nuevo (5 tests).
+- [x] Backend: test unitario que verifica que `TENANT_ADMIN` no puede crear `SUPER_ADMIN` (ya existía en `create-user.use-case.spec.ts` y `update-user.use-case.spec.ts`).
+- [x] Tests frontend (**vitest**): `lib/payment.ts` con funciones puras de cálculo del carrito y pagos mixtos (totales en céntimos, conversión VES → USD con tasa, tolerancia de ±2 centavos); `PaymentModal` y `PosView` refactorizados para usar el módulo (elimina lógica duplicada). **12 tests** en `payment.test.ts`.
+- [x] Validación client-side en **login**: requerido, email válido y contraseña ≥ 8 en `SignInForm`.
+- [x] Backend verificación: typecheck ✅, lint ✅, **151 tests unitarios** ✅ + **5 e2e reales** ✅.
+- [x] Frontend verificación: lint ✅, tsc ✅, **vitest 12/12** ✅, **build** ✅ (12 rutas).
 
 ## E. Limpieza UI/UX y Restos de TailAdmin
 
