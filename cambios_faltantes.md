@@ -50,13 +50,15 @@ la ejecución en `docs/manual_de_usuario.md` + Swagger (`/api/docs`).
 - [x] Backend verificación: typecheck ✅, lint ✅, **146 tests** ✅.
 - [x] Frontend verificación: lint ✅, tsc ✅, **build** ✅.
 
-## C. Seguridad y Despliegue (Prometido por `docs/arquitectura_maestra.md`)
+## C. Seguridad y Despliegue (Prometido por `docs/arquitectura_maestra.md`) ✅
 
-- [ ] Migración **RLS** de PostgreSQL: `ENABLE ROW LEVEL SECURITY` + `CREATE POLICY` por `tenant_id` en tablas de negocio.
-- [ ] `helmet` + rate limiting (`@nestjs/throttler`) + protección CSRF básica.
-- [ ] `CORS_ORIGIN` agregado al `.env.example`.
-- [ ] `Dockerfile` de la API + servicio API en `docker-compose.yml` (hoy solo levanta la BD).
-- [ ] `.env.production` y script/documento de despliegue (`migration:run` en producción).
+- [x] Migración **RLS** de PostgreSQL (`EnableRowLevelSecurity1729000000000`): `ENABLE ROW LEVEL SECURITY` + política `{tabla}_tenant_isolation` por `tenantId` en las **8 tablas de negocio** (`users`, `exchange_rates`, `categories`, `products`, `stock_adjustments`, `customers`, `sales`, `cash_registers`). Aplicada en `veccit_pos` y `veccit_pos_test`.
+  - Semántica: si la sesión define `app.current_tenant_id`, solo se ven/escriben filas de ese tenant; si no está definida (login, migraciones, bootstrap), el acceso es libre. Es la **segunda línea de defensa** (el aislamiento primario es el `WHERE tenantId = :tenantId` de los repositorios).
+- [x] `helmet` + rate limiting (`@nestjs/throttler`, 100 req/min por IP vía `ThrottlerGuard` global) — e2e smoke test con 429 al exceder el límite.
+- [x] `CORS_ORIGIN` agregado a `.env.example` y usado en `main.ts` (`app.enableCors`).
+- [x] `Dockerfile` multi-stage de la API (`backend/Dockerfile`) + servicio `api` en `docker-compose.yml` con healthcheck de `db` y volumen de `uploads`.
+- [x] `.env.production.example` versionado + `.env.production` (ignorado por git) y documentación de despliegue.
+- [x] Backend verificación: typecheck ✅, lint ✅, **151 tests unitarios** ✅ + **7 e2e reales** ✅ (5 de calidad ACID + 2 de seguridad).
 
 ## D. Calidad y Cobertura de Pruebas (Cero Deuda Técnica) ✅
 

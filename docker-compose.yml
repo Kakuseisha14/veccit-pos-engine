@@ -18,5 +18,31 @@ services:
       timeout: 5s
       retries: 5
 
+  api:
+    build:
+      context: ./backend
+    container_name: veccit_pos_api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: veccit_pos
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      SUPER_ADMIN_EMAIL: ${SUPER_ADMIN_EMAIL:-veccit@admin.com}
+      SUPER_ADMIN_PASSWORD: ${SUPER_ADMIN_PASSWORD:-change-me-in-production}
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+
 volumes:
   veccit_pos_data:

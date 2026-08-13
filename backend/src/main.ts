@@ -1,13 +1,19 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const corsOrigin =
+    configService.get<string>('corsOrigin') ?? 'http://localhost:3000';
 
   app.setGlobalPrefix('api');
+  app.use(helmet());
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -26,7 +32,7 @@ async function bootstrap() {
       ) {
         callback(null, true);
       } else {
-        callback(null, process.env.CORS_ORIGIN ?? 'http://localhost:3000');
+        callback(null, corsOrigin);
       }
     },
     credentials: true,

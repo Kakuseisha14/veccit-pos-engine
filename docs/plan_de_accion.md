@@ -177,6 +177,17 @@ veccit-pos-engine/
 
 ---
 
+### 🛡️ Fase 11: Seguridad y Despliegue
+> **Objetivo**: Cumplir el segundo nivel de aislamiento multi-tenant prometido en la arquitectura (RLS), endurecer los headers/rate-limit HTTP y dejar la API lista para producción con Docker.
+
+- [x] **Migración RLS** (`EnableRowLevelSecurity1729000000000`): `ENABLE ROW LEVEL SECURITY` + política `{tabla}_tenant_isolation` con `current_setting('app.current_tenant_id')` en las **8 tablas de negocio**. Aplicada en dev y test. Segunda línea de defensa tras el `WHERE tenantId = :tenantId` de los repositorios.
+- [x] **helmet** en `main.ts` (oculta `x-powered-by`, headers seguros) + **ThrottlerGuard** global (100 req/min/IP). Smoke e2e: 429 al exceder el límite y headers correctos.
+- [x] **CORS configurable**: `CORS_ORIGIN` en `.env.example` y leído desde `ConfigService`.
+- [x] **Despliegue**: `backend/Dockerfile` multi-stage (build → producción con `--omit=dev`), servicio `api` en `docker-compose.yml` (depends_on healthcheck de `db`, volumen de uploads), `.env.production.example` versionado.
+- **Tests**: Backend typecheck ✅, lint ✅, **151 tests unitarios** ✅ + **7 e2e** ✅ (5 ACID/calidad + 2 seguridad).
+
+---
+
 ## 🔍 Proceso de Verificación y Cero Deuda Técnica
 Al finalizar cada hito:
 1. Verificación de compilación TypeScript (`tsc --noEmit`).
