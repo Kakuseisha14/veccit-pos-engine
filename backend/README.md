@@ -1,5 +1,8 @@
 # Veccit POS Engine — Backend API
 
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+[![Volver al README principal](https://img.shields.io/badge/README-principal-blue)](../README.md)
+
 API NestJS (Clean Architecture) del sistema Punto de Venta y gestión de inventario
 multi-tenant. Es la fuente de verdad del negocio: auth, tenants, inventario, ventas
 (POS con pagos mixtos USD/VES en transacciones ACID), cierre de caja, métricas y subida

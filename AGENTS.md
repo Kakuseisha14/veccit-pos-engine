@@ -2,7 +2,7 @@
 
 ## 🚨 Regla Innegociable (Leer la planilla y documentar cada ejecución)
 - **ANTES de cualquier ejecución** (comando, módulo, cambio): LEER OBLIGATORIAMENTE `arquitectura_maestra.md` y `docs/plan_de_accion.md` para tener contexto de qué se está haciendo y en qué fase estamos.
-- **DESPUÉS de cada ejecución exitosa**: ACTUALIZAR OBLIGATORIAMENTE `manual_de_usuario.md` (raíz del repo) y mantener la documentación de la API vía **Swagger** (`/api/docs`, decoradores `@nestjs/swagger`).
+- **DESPUÉS de cada ejecución exitosa**: ACTUALIZAR OBLIGATORIAMENTE `docs/manual_de_usuario.md` y mantener la documentación de la API vía **Swagger** (`/api/docs`, decoradores `@nestjs/swagger`).
 
 ## Core Mandates & Reference Documents
 - **ALWAYS READ AND FOLLOW**: `arquitectura_maestra.md` and `docs/plan_de_accion.md`. All architectural decisions, multi-tenant rules, clean architecture layers, and module roadmap are governed by these two documents.

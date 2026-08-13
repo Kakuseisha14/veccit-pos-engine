@@ -1,5 +1,8 @@
 # Veccit POS Engine — Frontend (Next.js + TailAdmin)
 
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+[![Volver al README principal](https://img.shields.io/badge/README-principal-blue)](../README.md)
+
 Interfaz web del sistema Punto de Venta y gestión de inventario multi-tenant.
 Construida con **Next.js (App Router)** y el template Open Source **TailAdmin**
 sobre **Tailwind CSS**. Consume la API del backend (monorepo).

@@ -4,7 +4,7 @@
 
 1. **CONTEXTO OBLIGATORIO**: Antes de ejecutar cualquier comando, módulo o cambio, ES OBLIGATORIO leer primero `arquitectura_maestra.md` y `docs/plan_de_accion.md` para conocer la arquitectura vigente, las reglas multi-tenant y el roadmap con el fin de saber exactamente qué se está haciendo y hacia dónde va el proyecto.
 2. **DOCUMENTACIÓN OBLIGATORIA**: Después de cada ejecución exitosa, ES OBLIGATORIO actualizar la documentación:
-   - `manual_de_usuario.md` (en la raíz del repositorio) con las instrucciones de uso del sistema, pasos de instalación/ejecución y funcionalidades habilitadas.
+   - `docs/manual_de_usuario.md` con las instrucciones de uso del sistema, pasos de instalación/ejecución y funcionalidades habilitadas.
    - La API debe estar documentada con **Swagger** (`/api/docs`) y sus DTOs/endpoints decorados con `@nestjs/swagger`.
 
 ## 📌 Visión General del Proyecto
