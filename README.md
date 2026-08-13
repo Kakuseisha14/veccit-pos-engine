@@ -84,9 +84,9 @@ SUPER_ADMIN (dueño de la plataforma)
 | --- | --- |
 | <img src="docs/screenshots/pos.png" alt="POS" width="400" /> | <img src="docs/screenshots/inventory.png" alt="Inventario" width="400" /> |
 
-| Usuarios | Dashboard — gráfico de ventas |
+| Usuarios | Dashboard — vista completa |
 | --- | --- |
-| <img src="docs/screenshots/users.png" alt="Usuarios" width="400" /> | <img src="docs/screenshots/dashboard2.png" alt="Dashboard gráfico" width="400" /> |
+| <img src="docs/screenshots/users.png" alt="Usuarios" width="400" /> | <img src="docs/screenshots/dashboard2.png" alt="Dashboard vista completa" width="400" /> |
 
 ---
 
