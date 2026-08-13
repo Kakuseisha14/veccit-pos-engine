@@ -7,6 +7,19 @@ import { AppModule } from './../src/app.module';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
+  beforeAll(() => {
+    process.env.NODE_ENV = 'test';
+    process.env.DB_HOST = 'localhost';
+    process.env.DB_PORT = '5433';
+    process.env.DB_USERNAME = 'postgres';
+    process.env.DB_PASSWORD = 'postgres';
+    process.env.DB_DATABASE = 'veccit_pos_test';
+    process.env.JWT_SECRET = 'e2e-test-secret';
+    process.env.SUPER_ADMIN_EMAIL = 'super@test.com';
+    process.env.SUPER_ADMIN_PASSWORD = 'superadmin123';
+    process.env.UPLOADS_DIR = '.e2e-uploads';
+  });
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -16,6 +29,10 @@ describe('AppController (e2e)', () => {
     app.setGlobalPrefix('api');
     app.use(helmet());
     await app.init();
+  });
+
+  afterEach(async () => {
+    await app?.close();
   });
 
   it('/api/health (GET)', () => {
