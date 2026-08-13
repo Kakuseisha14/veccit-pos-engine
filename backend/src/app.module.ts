@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { PersistenceModule } from './infrastructure/persistence/persistence.module';
 import { typeOrmModuleOptions } from './infrastructure/persistence/typeorm.config';
 import { SecurityModule } from './infrastructure/security/security.module';
+import { CsrfOriginMiddleware } from './infrastructure/security/csrf-origin.middleware';
 import { StorageModule } from './infrastructure/storage/storage.module';
 import { TenantContextInterceptor } from './presentation/http/interceptors/tenant-context.interceptor';
 import { HealthModule } from './presentation/http/controllers/health.module';
@@ -50,4 +51,8 @@ import { UploadsModule } from './presentation/http/modules/uploads.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(CsrfOriginMiddleware).forRoutes('*');
+  }
+}

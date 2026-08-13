@@ -45,4 +45,12 @@ describe('AppController (e2e)', () => {
     const res = await request(app.getHttpServer()).get('/api/health');
     expect(res.status).toBe(429);
   });
+
+  it('rechaza mutaciones con un Origin foraneo (proteccion CSRF)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .set('Origin', 'https://evil.example.com')
+      .send({ email: 'nobody@example.com', password: '12345678' });
+    expect(res.status).toBe(403);
+  });
 });

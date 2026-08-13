@@ -182,9 +182,11 @@ veccit-pos-engine/
 
 - [x] **Migración RLS** (`EnableRowLevelSecurity1729000000000`): `ENABLE ROW LEVEL SECURITY` + política `{tabla}_tenant_isolation` con `current_setting('app.current_tenant_id')` en las **8 tablas de negocio**. Aplicada en dev y test. Segunda línea de defensa tras el `WHERE tenantId = :tenantId` de los repositorios.
 - [x] **helmet** en `main.ts` (oculta `x-powered-by`, headers seguros) + **ThrottlerGuard** global (100 req/min/IP). Smoke e2e: 429 al exceder el límite y headers correctos.
+- [x] **Protección CSRF**: `CsrfOriginMiddleware` global valida `Origin`/`Referer` en mutaciones (dev: `localhost`/`127.0.0.1`; producción: solo `CORS_ORIGIN`). e2e con 403 ante origen foráneo + spec unitario (5 tests).
+- [x] **Sesión segura**: cookie `access_token` HttpOnly + `SameSite=Strict` + `Secure` configurable vía `SESSION_SECURE` (default en producción); `trust proxy` habilitado tras reverse-proxy.
 - [x] **CORS configurable**: `CORS_ORIGIN` en `.env.example` y leído desde `ConfigService`.
 - [x] **Despliegue**: `backend/Dockerfile` multi-stage (build → producción con `--omit=dev`), servicio `api` en `docker-compose.yml` (depends_on healthcheck de `db`, volumen de uploads), `.env.production.example` versionado.
-- **Tests**: Backend typecheck ✅, lint ✅, **151 tests unitarios** ✅ + **7 e2e** ✅ (5 ACID/calidad + 2 seguridad).
+- **Tests**: Backend typecheck ✅, lint ✅, **156 tests unitarios** ✅ + **8 e2e** ✅ (5 ACID/calidad + 3 seguridad).
 
 ---
 

@@ -83,7 +83,7 @@ export class AuthController {
 
     res.cookie(COOKIE_NAME, result.accessToken, {
       httpOnly: true,
-      secure: this.config.get<string>('NODE_ENV') === 'production',
+      secure: this.config.get<boolean>('sessionSecure') ?? false,
       sameSite: 'strict',
       path: '/',
       maxAge: SEVEN_DAYS_MS,
@@ -106,7 +106,7 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      secure: this.config.get<string>('NODE_ENV') === 'production',
+      secure: this.config.get<boolean>('sessionSecure') ?? false,
       sameSite: 'strict',
       path: '/',
     });

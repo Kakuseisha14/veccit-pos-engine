@@ -154,8 +154,10 @@ npm run dev
 ## 🔐 Seguridad y Despliegue (Fase 11)
 - **Row-Level Security**: todas las tablas de negocio tienen RLS activo con política por `tenantId` (`app.current_tenant_id`). Cuando la sesión define el tenant solo se accede a sus filas; si no está definido (login/migraciones/bootstrap) el acceso es libre. Es la **segunda línea de defensa** tras el aislamiento de los repositorios.
 - **Headers seguros y rate limiting**: `helmet` elimina `x-powered-by` y añade headers de seguridad; `@nestjs/throttler` limita la API a **100 peticiones/min por IP** (HTTP 429 al superar).
+- **CSRF**: el middleware global valida el `Origin`/`Referer` de las mutaciones; en producción solo se acepta `CORS_ORIGIN` (las peticiones sin navegador —curl, scripts— se permiten). Una mutación con origen foráneo responde **403**.
+- **Sesión segura**: la cookie `access_token` es `HttpOnly` + `SameSite=Strict` + `Secure` (controlado por `SESSION_SECURE`, activo por defecto en producción). Tras un reverse-proxy se habilita `trust proxy`.
 - **CORS**: se configura con `CORS_ORIGIN` (`.env.example`). Por defecto `http://localhost:3000`.
-- **Despliegue con Docker**: `docker compose up --build` levanta la **API** (`veccit_pos_api` en puerto 3001) y la **BD** (`veccit_pos_db` en 5433). Requiere `.env.production` (ver `.env.production.example`) con `JWT_SECRET`, `DB_PASSWORD`, `SUPER_ADMIN_PASSWORD` y `CORS_ORIGIN` reales. Las migraciones corren automáticamente si `NODE_ENV !== production`; en producción ejecutar `npm run migration:run` manualmente.
+- **Despliegue con Docker**: `docker compose up --build` levanta la **API** (`veccit_pos_api` en puerto 3001) y la **BD** (`veccit_pos_db` en 5433). Requiere `.env.production` (ver `.env.production.example`) con `JWT_SECRET`, `DB_PASSWORD`, `SUPER_ADMIN_PASSWORD`, `CORS_ORIGIN` y `SESSION_SECURE=true` reales. Las migraciones corren automáticamente si `NODE_ENV !== production`; en producción ejecutar `npm run migration:run` manualmente.
 
 ## 🔄 Estado por Fase
 | Fase | Módulo | Estado |

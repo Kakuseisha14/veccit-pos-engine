@@ -14,7 +14,11 @@ describe('AuthController', () => {
   const loginUseCase = { execute: jest.fn() };
   const getCurrentSessionUseCase = { execute: jest.fn() };
   const changePasswordUseCase = { execute: jest.fn() };
-  const config = { get: jest.fn().mockReturnValue('development') };
+  const config = {
+    get: jest.fn((key: string) =>
+      key === 'sessionSecure' ? false : undefined,
+    ),
+  };
 
   const buildResponse = (): jest.Mocked<
     Pick<Response, 'cookie' | 'clearCookie'>

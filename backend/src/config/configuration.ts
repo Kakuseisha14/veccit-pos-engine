@@ -2,6 +2,7 @@ export interface AppConfig {
   port: number;
   uploadsDir: string;
   corsOrigin: string;
+  sessionSecure: boolean;
   database: {
     host: string;
     port: number;
@@ -23,6 +24,9 @@ export default (): AppConfig => ({
   port: parseInt(process.env.PORT ?? '3000', 10),
   uploadsDir: process.env.UPLOADS_DIR ?? 'uploads',
   corsOrigin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+  sessionSecure:
+    process.env.SESSION_SECURE === 'true' ||
+    process.env.NODE_ENV === 'production',
   database: {
     host: process.env.DB_HOST ?? 'localhost',
     port: parseInt(process.env.DB_PORT ?? '5432', 10),
