@@ -9,7 +9,7 @@
 
 ### Requisitos previos
 - Node.js 18+ y npm.
-- Docker (para PostgreSQL 16) o PostgreSQL local en puerto 5433.
+- Docker (para PostgreSQL 16) o PostgreSQL local en puerto 5431.
 
 ### 1. Base de datos PostgreSQL
 ```bash
@@ -17,7 +17,7 @@ docker compose up -d db
 ```
 - Base de datos: `veccit_pos`
 - Usuario/Pass: `postgres` / `postgres` (configurable en `.env`)
-- Puerto expuesto: `5433`
+- Puerto expuesto: `5431`
 
 ### 2. Backend (NestJS API)
 ```bash
@@ -157,7 +157,7 @@ npm run dev
 - **CSRF**: el middleware global valida el `Origin`/`Referer` de las mutaciones; en producción solo se acepta `CORS_ORIGIN` (las peticiones sin navegador —curl, scripts— se permiten). Una mutación con origen foráneo responde **403**.
 - **Sesión segura**: la cookie `access_token` es `HttpOnly` + `SameSite=Strict` + `Secure` (controlado por `SESSION_SECURE`, activo por defecto en producción). Tras un reverse-proxy se habilita `trust proxy`.
 - **CORS**: se configura con `CORS_ORIGIN` (`.env.example`). Por defecto `http://localhost:3000`.
-- **Despliegue con Docker**: `docker compose up --build` levanta la **API** (`veccit_pos_api` en puerto 3001) y la **BD** (`veccit_pos_db` en 5433). Requiere `.env.production` (ver `.env.production.example`) con `JWT_SECRET`, `DB_PASSWORD`, `SUPER_ADMIN_PASSWORD`, `CORS_ORIGIN` y `SESSION_SECURE=true` reales. Las migraciones corren automáticamente si `NODE_ENV !== production`; en producción ejecutar `npm run migration:run` manualmente.
+- **Despliegue con Docker**: `docker compose up --build` levanta la **API** (`veccit_pos_api` en puerto 3001) y la **BD** (`veccit_pos_db` en 5431). Requiere `.env.production` (ver `.env.production.example`) con `JWT_SECRET`, `DB_PASSWORD`, `SUPER_ADMIN_PASSWORD`, `CORS_ORIGIN` y `SESSION_SECURE=true` reales. Las migraciones corren automáticamente si `NODE_ENV !== production`; en producción ejecutar `npm run migration:run` manualmente.
 
 ## 🔄 Estado por Fase
 | Fase | Módulo | Estado |

@@ -52,7 +52,7 @@ npm test                # tests unitarios (Jest)
 npm run test:e2e        # e2e contra PostgreSQL real (requiere veccit_pos_test creada)
 ```
 
-Los e2e usan la base `veccit_pos_test` en el contenedor `veccit_pos_db` (puerto 5433).
+Los e2e usan la base `veccit_pos_test` en el contenedor `veccit_pos_db` (puerto 5431).
 Crearla con:
 `docker exec veccit_pos_db createdb -U postgres veccit_pos_test`
 

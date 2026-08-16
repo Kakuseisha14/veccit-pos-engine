@@ -146,7 +146,7 @@ veccit-pos-engine/
 ### Requisitos previos
 
 - **Node.js 20+** y npm
-- **Docker** (para PostgreSQL) o PostgreSQL local en el puerto `5433`
+- **Docker** (para PostgreSQL) o PostgreSQL local en el puerto `5431`
 
 ### 1. Base de datos
 
@@ -158,7 +158,7 @@ docker compose up -d db
 | --- | --- |
 | Base de datos | `veccit_pos` |
 | Usuario / contraseña | `postgres` / `postgres` |
-| Puerto expuesto | `5433` |
+| Puerto expuesto | `5431` |
 
 ### 2. Backend (API)
 
@@ -224,7 +224,7 @@ cp .env.production.example .env.production   # completa JWT_SECRET, DB_PASSWORD,
 docker compose up --build
 ```
 
-Levanta la **API** (`veccit_pos_api`, puerto `3001`) y la **BD** (`veccit_pos_db`, puerto `5433`). En producción ejecuta las migraciones manualmente:
+Levanta la **API** (`veccit_pos_api`, puerto `3001`) y la **BD** (`veccit_pos_db`, puerto `5431`). En producción ejecuta las migraciones manualmente:
 
 ```bash
 docker compose exec api npm run migration:run

@@ -18,7 +18,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: veccit_pos
         ports:
-          - 5433:5432
+          - 5431:5432
         options: >-
           --health-cmd "pg_isready -U postgres -d veccit_pos"
           --health-interval 10s
@@ -27,7 +27,7 @@ jobs:
     env:
       NODE_ENV: test
       DB_HOST: localhost
-      DB_PORT: 5433
+      DB_PORT: 5431
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_DATABASE: veccit_pos_test
