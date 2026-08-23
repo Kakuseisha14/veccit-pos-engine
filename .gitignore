@@ -24,3 +24,8 @@ npm-debug.log*
 
 # runtime uploads (avatares)
 backend/uploads/
+
+# Proteccion de Propiedad Intelectual y Reglas Internas
+.opencode/
+docs/arquitectura_maestra.md
+docs/plan_de_accion.md
