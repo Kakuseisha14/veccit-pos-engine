@@ -27,5 +27,8 @@ backend/uploads/
 
 # Proteccion de Propiedad Intelectual y Reglas Internas
 .opencode/
+.opencode/*
+skills/
+.skills/
 docs/arquitectura_maestra.md
 docs/plan_de_accion.md
